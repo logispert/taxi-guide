@@ -1,0 +1,14 @@
+taxiguider\PolicyHandler.class
+taxiguider\택시할당취소됨.class
+taxiguider\external\Pay.class
+taxiguider\AbstractEvent$1.class
+taxiguider\TaxiAssignmentController.class
+taxiguider\할당확인됨.class
+taxiguider\TaxiassignApplication.class
+taxiguider\TaxiAssignmentRepository.class
+taxiguider\external\PayService.class
+taxiguider\AbstractEvent.class
+taxiguider\TaxiAssignment.class
+taxiguider\택시할당상태갱신됨.class
+taxiguider\택시할당요청됨.class
+taxiguider\config\kafka\KafkaProcessor.class
