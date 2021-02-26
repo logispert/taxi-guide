@@ -1,13 +1,13 @@
-![image](https://user-images.githubusercontent.com/487999/79708354-29074a80-82fa-11ea-80df-0db3962fb453.png)
+![image](screenshots/kakao_taxi_logo.jpg "카카오 택시 따라잡기")
 
-# 택시비서
+# 택시가이드(taxiguider)
 
 본 예제는 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/설계/구현/운영 전단계를 커버하도록 구성한 예제입니다.
 이는 클라우드 네이티브 애플리케이션의 개발에 요구되는 체크포인트들을 통과하기 위한 예시 답안을 포함합니다.
 - 체크포인트 : https://workflowy.com/s/assessment-check-po/T5YrzcMewfo4J6LW
 
 
-# Table of contents
+# 목차
 
 - [예제 - 음식배달](#---)
   - [서비스 시나리오](#서비스-시나리오)
@@ -218,10 +218,19 @@
 cd app
 mvn spring-boot:run
 
-cd pay
+cd taxicall
 mvn spring-boot:run 
 
-cd store
+cd payment
+mvn spring-boot:run 
+
+cd taxiassignment
+mvn spring-boot:run  
+
+cd taxicall
+mvn spring-boot:run  
+
+cd taximanagement
 mvn spring-boot:run  
 
 cd customer
@@ -941,16 +950,3 @@ http localhost:8088/orders/1
 	
 	    }
 ```
-
-# 도커 설정
-    
-![image](screenshots/도커설정_General.png "도커설정_General")
-
-![image](screenshots/도커설정_Resource.png "도커설정_General")
-
-![image](screenshots/도커설정_Kubenetes.png "도커설정_General")
-
-# 학습추천사이트:
-http://msaschool.io
-http://msaez.io
-https://github.com/msa-ez
