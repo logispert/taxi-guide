@@ -119,7 +119,9 @@
 
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/AYDToXSmsXY4cguxhLA9jTpgvGc2/mine/6e22a051f267ea10acaf7c1e22c6632a
+* MSAEz 로 모델링한 이벤트스토밍 결과:  
+* http://www.msaez.io/#/storming/AYDToXSmsXY4cguxhLA9jTpgvGc2/mine/6e22a051f267ea10acaf7c1e22c6632a
+* http://www.msaez.io/#/storming/AYDToXSmsXY4cguxhLA9jTpgvGc2/every/663e27e6ef252865a609e90c5e01f243
 
 ###  버전이력
 
