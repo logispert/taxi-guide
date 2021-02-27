@@ -958,7 +958,7 @@ http localhost:8088/orders/1
 ```
 # 설계이력_시나리오
 
-![image](sen1ario/version1.png "설계버전1")
+![image](senario/version1.png "설계버전1")
 
 ![image](senario/version2.png "설계버전2")
 
