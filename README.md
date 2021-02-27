@@ -25,7 +25,7 @@
     - [오토스케일 아웃](#오토스케일-아웃)
     - [무정지 재배포](#무정지-재배포)
   - [신규 개발 조직의 추가](#신규-개발-조직의-추가)
-- [설계이력 및 시나리오](#설계이력 및 시나리오)
+- [설계이력_시나리오](#설계이력 및 시나리오)
 
 # 서비스 시나리오
 
@@ -121,10 +121,14 @@
 ## Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/AYDToXSmsXY4cguxhLA9jTpgvGc2/mine/6e22a051f267ea10acaf7c1e22c6632a
 
+###  버전이력
+
 * 초기버전
+
 ![image](senario/version1.png "설계버전1")
 
 * 중간버전
+
 ![image](senario/version2.png "설계버전2")
 
 
