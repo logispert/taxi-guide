@@ -956,14 +956,14 @@ http localhost:8088/orders/1
 	
 	    }
 ```
-# 설계이력 및 시나리오
+# 설계이력_시나리오
 
-![image](sen1ario/version1.jpg "설계버전1")
+![image](sen1ario/version1.png "설계버전1")
 
-![image](senario/version2.jpg "설계버전2")
+![image](senario/version2.png "설계버전2")
 
-![image](senario/할당시나리오.jpg "할당시나리오")
+![image](senario/할당시나리오.png "할당시나리오")
 
-![image](senario/할당시나리오_v2.jpg "할당시나리오2")
+![image](senario/할당시나리오_v2.png "할당시나리오2")
 
-![image](senario/할당취소시나리오.jpg "할당취소시나리오")
+![image](senario/할당취소시나리오.png "할당취소시나리오")
