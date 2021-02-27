@@ -122,10 +122,10 @@
 * MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/AYDToXSmsXY4cguxhLA9jTpgvGc2/mine/6e22a051f267ea10acaf7c1e22c6632a
 
 * 초기버전
-![image](screenshots/택시가이드_이벤트스토밍_결과.png "택시가이드_이벤트스토밍_결과")
+![image](senario/version1.png "설계버전1")
 
 * 중간버전
-![image](senario/version2.jpg "설계버전2")
+![image](senario/version2.png "설계버전2")
 
 
 ### 이벤트 도출

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taxicall
+  labels:
+    app: taxicall
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taxicall
+  template:
+    metadata:
+      labels:
+        app: taxicall
+    spec:
+      containers:
+        - name: command-handler
+          image: username/taxicall-command-handler:latest
+          ports:
+            - containerPort: 8081
+        - name: policy-handler
+          image: username/taxicall-policy-handler:latest

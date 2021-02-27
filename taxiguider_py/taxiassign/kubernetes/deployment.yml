@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taxiassign
+  labels:
+    app: taxiassign
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taxiassign
+  template:
+    metadata:
+      labels:
+        app: taxiassign
+    spec:
+      containers:
+        - name: command-handler
+          image: username/taxiassign-command-handler:latest
+          ports:
+            - containerPort: 8084
+        - name: policy-handler
+          image: username/taxiassign-policy-handler:latest
