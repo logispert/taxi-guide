@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Build-Web" default="run" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/> 
+
+	<property name="project.name" value="${PROJECT_NAME}" />
+	<property file="./build_web.properties" />
+	
+	<target name="run" >
+		<echo> #################################################### </echo>
+		<echo> Build start </echo>
+		<echo> Project : ${project.name}</echo>
+		<echo> #################################################### </echo>
+		
+		<if>
+			<equals arg1="true" arg2="${is.fullbuild}" />
+			<then>
+				<antcall target="buildAll" />
+			</then>
+			<else>
+				<antcallback target="checkBuildDetailProperties" return="build.detail.properties.is.not.empty" />
+				<antcall target="checkDeployPath" />
+				<antcall target="buildEach" />
+			</else>
+		</if>
+	</target>
+	
+	<target name="checkBuildDetailProperties" >
+		<!-- build.detail.properties 파일 길이 확인 -->
+		<condition property="build.detail.properties.is.not.empty">
+			<length file="build.detail.properties" when="greater" length="0" />
+		</condition>
+	</target>
+	
+	<target name="checkDeployPath" >
+		<!-- DEPLOY_PATH 가 입력되었고 실제 경로가 존재하는지 확인 -->
+		<if>
+			<or>
+				<not>
+					<isset property="DEPLOY_PATH" />
+				</not>
+				<equals arg1="${DEPLOY_PATH}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># DEPLOY_PATH(배포경로) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="DEPLOY_PATH not set. Check Jenkins configuration." />
+			</then>
+			<elseif>
+				<not>
+					<available file="${DEPLOY_PATH}" type="dir" />
+				</not>
+				<then>
+					<echo>####################################################</echo>
+					<echo># DEPLOY_PATH(배포경로) 가 존재하지 않습니다. ${DEPLOY_PATH} #</echo>
+					<echo>####################################################</echo>
+					<fail message="DEPLOY_PATH does not exist. ${DEPLOY_PATH}" />
+				</then>
+			</elseif>
+		</if>
+	</target>
+	
+	<target name="buildAll" depends="initPackaging">
+		
+		<!-- web resources -->
+		<copy todir="${packaging.dir}" verbose="${is.verbose}" includeemptydirs="true">
+			<fileset dir="${web.root}" includesfile="config/deploy_web.includes" excludesfile="config/deploy_web.excludes" />
+		</copy>
+		
+		<!-- preserve original -->
+		<copy todir="${packaging.dir}" overwrite="true" force="true" preservelastmodified="true" includeemptydirs="true" verbose="${is.verbose}">
+			<fileset id="original" dir="${deploy.home}" defaultexcludes="true" includesfile="config/preserve_original_web.includes" />
+		</copy>
+	</target>
+	
+	<target name="initPackaging" >
+		<if>
+			<istrue value="${is.clean}"/>
+			<then>
+				<delete dir="${packaging.dir}" failonerror="false"/>
+			</then>
+		</if>
+		<mkdir dir="${packaging.dir}" />
+	</target>
+	
+	
+	
+	<!-- 개별 파일 빌드 -->
+	<target name="buildEach" depends="refreshTemp" if="build.detail.properties.is.not.empty" >
+		<copy todir="${temp.dir}" failonerror="false" verbose="${is.verbose}" >
+			<fileset dir="${source.root}" includesFile="build.detail.properties" />
+		</copy>
+	</target>
+	
+	<target name="refreshTemp" >
+		<delete dir="${temp.dir}" failonerror="false"/>
+		<mkdir dir="${temp.dir}" />
+	</target>
+	
+</project>

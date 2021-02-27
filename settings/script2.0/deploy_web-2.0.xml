@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Build-Web" default="run" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/> 
+
+	<property name="project.name" value="${PROJECT_NAME}" />
+	<property file="./build_web.properties" />
+	
+	<target name="run" >
+		<echo> #################################################### </echo>
+		<echo> Deploy start </echo>
+		<echo> Project : ${project.name}</echo>
+		<echo> #################################################### </echo>
+		
+		<if>
+			<equals arg1="true" arg2="${is.fullbuild}" />
+			<then>
+				<antcall target="deploy" />
+			</then>
+			<else>
+				<antcallback target="checkBuildDetailProperties" return="build.detail.properties.is.not.empty" />
+				<antcall target="checkDeployPath" />
+				<antcall target="deployEach" />
+			</else>
+		</if>
+	</target>
+	
+	<target name="checkBuildDetailProperties" >
+		<!-- build.detail.properties 파일 길이 확인 -->
+		<condition property="build.detail.properties.is.not.empty">
+			<length file="build.detail.properties" when="greater" length="0" />
+		</condition>
+	</target>
+
+	<target name="checkDeployPath" >
+		<!-- DEPLOY_PATH 가 입력되었고 실제 경로가 존재하는지 확인 -->
+		<if>
+			<or>
+				<not>
+					<isset property="DEPLOY_PATH" />
+				</not>
+				<equals arg1="${DEPLOY_PATH}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># DEPLOY_PATH(배포경로) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="DEPLOY_PATH not set. Check Jenkins configuration." />
+			</then>
+			<elseif>
+				<not>
+					<available file="${DEPLOY_PATH}" type="dir" />
+				</not>
+				<then>
+					<echo>####################################################</echo>
+					<echo># DEPLOY_PATH(배포경로) 가 존재하지 않습니다. ${DEPLOY_PATH} #</echo>
+					<echo>####################################################</echo>
+					<fail message="DEPLOY_PATH does not exist. ${DEPLOY_PATH}" />
+				</then>
+			</elseif>
+		</if>
+	</target>
+
+	<target name="deploy">
+		<copy todir="${deploy.home}" failonerror="false" overwrite="true" verbose="${is.verbose}">
+			<fileset dir="${packaging.dir}" defaultexcludes="true" >
+				<excludesfile name="config/preserve_original_web.includes"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	
+	
+	
+	
+	<!-- 파일 선택 배포. 개별파일 선택 배포때는 그냥 복사한다 -->
+	<target name="deployEach" if="build.detail.properties.is.not.empty" >
+		
+		<!-- src/main/webapps 밑에 있는 파일들 복사 -->
+		<!-- WAS 와 WEB Server 로 가야 될 파일들의 구분은 deploy_was.includes, deploy_web.includes 로 나눈다. -->
+		<copy todir="${deploy.home}" failonerror="false" overwrite="true" verbose="${is.verbose}">
+			<fileset dir="${temp.dir}${src.main.webapp}" includesfile="config/deploy_web.includes" excludesfile="config/deploy_web.excludes" >
+				<excludesfile name="config/preserve_original_web.includes"/>
+			</fileset>
+		</copy>
+	</target>
+	
+</project>

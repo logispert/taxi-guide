@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Backup" default="run" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<property file="./build_web.properties" />
+
+	<target name="run">
+		<echo> ####################################################### </echo>
+		<echo> Backup : ${BUILD_NUMBER} </echo>
+		<echo> ####################################################### </echo>
+
+		<antcall target="checkBackupPath" />
+		<antcall target="checkDeployPath" />
+		<antcall target="checkKeepDays" />
+		<antcall target="initBackup" />
+
+		<if>
+			<equals arg1="true" arg2="${is.fullbuild}" />
+			<then>
+				<antcall target="fullBackup" />
+			</then>
+			<else>
+				<antcall target="changedBackup" />
+			</else>
+		</if>
+
+		<!-- delete old backup -->
+		<antcall target="deleteOldBackup" />
+
+		<!-- update latest -->
+		<echo file="${BACKUP_PATH}/latest" message="${BUILD_NUMBER}" />
+
+		<!-- update buildlist -->
+		<antcall target="updateBuildList" />
+
+		<!-- print backup list -->
+		<antcall target="printExistingBackupList" />
+	</target>
+
+	<target name="checkKeepDays" >
+		<if>
+			<or>
+				<not>
+					<isset property="KEEP_DAYS" />
+				</not>
+				<equals arg1="${KEEP_DAYS}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># KEEP_DAYS(백업 보관 기간) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="KEEP_DAYS not set. Check Jenkins configuration." />
+			</then>
+		</if>
+	</target>
+	
+	<target name="checkBackupPath" >
+		<if>
+			<or>
+				<not>
+					<isset property="BACKUP_PATH" />
+				</not>
+				<equals arg1="${BACKUP_PATH}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># BACKUP_PATH(백업경로) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="BACKUP_PATH not set. Check Jenkins configuration." />
+			</then>
+		</if>
+	</target>
+		
+	<target name="checkDeployPath" >
+		<!-- DEPLOY_PATH 가 입력되었고 실제 경로가 존재하는지 확인 -->
+		<if>
+			<or>
+				<not>
+					<isset property="DEPLOY_PATH" />
+				</not>
+				<equals arg1="${DEPLOY_PATH}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># DEPLOY_PATH(배포경로) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="DEPLOY_PATH not set. Check Jenkins configuration." />
+			</then>
+			<elseif>
+				<not>
+					<available file="${DEPLOY_PATH}" type="dir" />
+				</not>
+				<then>
+					<echo>####################################################</echo>
+					<echo># DEPLOY_PATH(배포경로) 가 존재하지 않습니다. ${DEPLOY_PATH} #</echo>
+					<echo>####################################################</echo>
+					<fail message="DEPLOY_PATH does not exist. ${DEPLOY_PATH}" />
+				</then>
+			</elseif>
+		</if>
+	</target>
+	
+	<!-- packaging 하위의 모든 파일 백업 -->
+	<target name="fullBackup">
+		<!-- packagingWeb 하위의 모든 파일 검색 -->
+		<property name="canonical.packaging.path" location="${packaging.dir}" />
+
+		<pathconvert pathsep="," property="relative.files">
+			<fileset dir="${canonical.packaging.path}" >
+				<excludesfile name="config/backup_web.excludes" />
+			</fileset>
+			<filtermapper>
+				<replacestring from="\" to="/" />
+			</filtermapper>
+			<map from="${canonical.packaging.path}/" to="" />
+		</pathconvert>
+
+		<for list="${relative.files}" param="relative.file" delimiter=",">
+			<sequential>
+				<echo>@{relative.file}</echo>
+				<echo file="${BACKUP_PATH}/${BUILD_NUMBER}/backuplist" append="true" message="@{relative.file}${line.separator}" />
+			</sequential>
+		</for>
+
+		<!-- backup start -->
+		<antcall target="copyToBackupspace" />
+	</target>
+
+	<!-- intialize directory -->
+	<target name="initBackup">
+		<!-- Create Build No Directory -->
+		<mkdir dir="${BACKUP_PATH}/${BUILD_NUMBER}" />
+
+		<!-- Write created datetime -->
+		<tstamp>
+			<format property="currentTime" pattern="yyyy/MM/dd hh:mm aa" locale="en,US" />
+		</tstamp>
+		<echo file="${BACKUP_PATH}/${BUILD_NUMBER}/created" message="${currentTime}" />
+	</target>
+
+	<!-- update buildlist -->
+	<target name="updateBuildList">
+		<if>
+			<not>
+				<available file="${BACKUP_PATH}/buildlist" />
+			</not>
+			<then>
+				<touch file="${BACKUP_PATH}/buildlist" />
+			</then>
+		</if>
+		<loadfile property="build.list" srcfile="${BACKUP_PATH}/buildlist" />
+
+		<echo file="${BACKUP_PATH}/buildlist" message="${BUILD_NUMBER}${line.separator}" append="false" />
+		<for list="${build.list}" param="buildNo" delimiter="${line.separator}">
+			<sequential>
+				<if>
+					<and>
+						<available file="${BACKUP_PATH}/@{buildNo}" type="dir" />
+						<not>
+							<equals arg1="@{buildNo}" arg2="${BUILD_NUMBER}" />
+						</not>
+					</and>
+					<then>
+						<echo file="${BACKUP_PATH}/buildlist" message="@{buildNo}${line.separator}" append="true" />
+					</then>
+				</if>
+			</sequential>
+		</for>
+	</target>
+
+	<!-- print backup list -->
+	<target name="printExistingBackupList">
+		<echo> ########################################################### </echo>
+		<echo> Backup List </echo>
+		<echo> =========================================================== </echo>
+		<echo> Build No.		Created Time 		Is Rollbacked</echo>
+		<echo> =========================================================== </echo>
+
+		<loadfile property="backup.list" srcfile="${BACKUP_PATH}/buildlist" />
+
+		<for list="${backup.list}" param="backup.no" delimiter="${line.separator}">
+			<sequential>
+				<if>
+					<available file="${BACKUP_PATH}/@{backup.no}/rollback" />
+					<then>
+						<property name="@{backup.no}.rollback" value="Y" />
+					</then>
+					<else>
+						<property name="@{backup.no}.rollback" value="N" />
+					</else>
+				</if>
+				<if>
+					<available file="${BACKUP_PATH}/@{backup.no}/created" />
+					<then>
+						<loadfile property="@{backup.no}.created" srcfile="${BACKUP_PATH}/@{backup.no}/created" />
+						<echo>	#@{backup.no}		${@{backup.no}.created}	${@{backup.no}.rollback}</echo>
+					</then>
+					<else>
+						<echo>	#@{backup.no}		N/A			${@{backup.no}.rollback}</echo>
+					</else>
+				</if>
+			</sequential>
+		</for>
+
+		<echo> =========================================================== </echo>
+		<loadfile property="latest" srcfile="${BACKUP_PATH}/latest" />
+		<echo> latest : ${latest}</echo>
+		<echo> ########################################################### </echo>
+	</target>
+
+	<!-- 일감 배포인 경우 변경분 백업 -->
+	<target name="changedBackup">
+		<mkdir dir="${BACKUP_PATH}/${BUILD_NUMBER}/backupspace" />
+
+		<pathconvert property="canonical.deploy.home">
+			<path>
+				<pathelement location="${deploy.home}" />
+			</path>
+			<filtermapper>
+				<replacestring from="\" to="/" />
+			</filtermapper>
+		</pathconvert>
+
+		<antcall target="calculateWebapp" />
+
+		<!-- backup start -->
+		<antcall target="copyToBackupspace" />
+	</target>
+
+	<!-- copy Files -->
+	<target name="copyToBackupspace">
+		<!-- backuplist 파일이 존재하고 파일안에 내용이 있을 경우만 실행한다. -->
+		<if>
+			<and>
+				<available file="${BACKUP_PATH}/${BUILD_NUMBER}/backuplist" />
+				<length file="${BACKUP_PATH}/${BUILD_NUMBER}/backuplist" when="greater" length="0" />
+			</and>
+			<then>
+				<copy todir="${BACKUP_PATH}/${BUILD_NUMBER}/backupspace" preservelastmodified="true" failonerror="true" overwrite="true" verbose="${is.verbose}">
+					<fileset dir="${deploy.home}" includesFile="${BACKUP_PATH}/${BUILD_NUMBER}/backuplist">
+						<excludesfile name="config/backup_web.excludes" />
+					</fileset>
+				</copy>
+			</then>
+		</if>
+	</target>
+
+	<!-- check resources exists -->
+	<target name="checkWebapps">
+		<available property="webapp.exist" file="${temp.dir}${src.main.webapp}" type="dir" />
+	</target>
+
+	<!-- add Webapp to backup list file -->
+	<target name="calculateWebapp" depends="checkWebapps" if="webapp.exist">
+		<!-- create webapp list -->
+		<property name="canonical.webapp.path" location="${temp.dir}${src.main.webapp}" />
+
+		<pathconvert pathsep="," property="relative.webapp.files">
+			<fileset dir="${canonical.webapp.path}" >
+				<excludesfile name="config/backup_web.excludes" />
+			</fileset>
+			<filtermapper>
+				<replacestring from="\" to="/" />
+			</filtermapper>
+			<map from="${canonical.webapp.path}/" to="" />
+		</pathconvert>
+
+		<for list="${relative.webapp.files}" param="relative.webapp" delimiter=",">
+			<sequential>
+				<echo>@{relative.webapp}</echo>
+				<echo file="${BACKUP_PATH}/${BUILD_NUMBER}/backuplist" append="true" message="@{relative.webapp}${line.separator}" />
+			</sequential>
+		</for>
+	</target>
+
+
+	<target name="deleteOldBackup">
+		<tstamp>
+			<format property="last" pattern="MM/dd/yyyy hh:mm aa" locale="en,US" offset="-${KEEP_DAYS}" unit="day" />
+		</tstamp>
+		<delete verbose="true">
+			<dirset dir="${BACKUP_PATH}" includes="*">
+				<date datetime="${last}" when="before" checkdirs="true" />
+			</dirset>
+		</delete>
+	</target>
+
+</project>

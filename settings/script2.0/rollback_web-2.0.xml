@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Rollback" default="run" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<property file="./build_web.properties" />
+
+	<target name="run">
+
+		<antcall target="checkBackupPath" />
+		<antcall target="checkDeployPath" />
+		
+		<!-- get build list -->
+		<if>
+			<available file="${BACKUP_PATH}/buildlist" />
+			<then>
+				<loadfile property="buildlist" srcfile="${BACKUP_PATH}/buildlist" />
+			</then>
+			<else>
+				<echo>buildlist file not exists. ${BACKUP_PATH}/buildlist</echo>
+				<echo>There's no backup, or create buildlist and retry. </echo>
+				<fail message="buildlist file not exists." />
+			</else>
+		</if>
+
+		<!-- validate TARGET_BUILD_NUMBER -->
+		<antcallback target="checkTargetBuildNo" return="target.isset" />
+		<!-- get build number to rollback -->
+		<antcallback target="getTargetBuildList" return="target.build.list" />
+
+		<for param="buildNo" list="${target.build.list}" delimiter=",">
+			<sequential>
+				<antcall target="changedRollback">
+					<param name="build.no" value="@{buildNo}" />
+				</antcall>
+			</sequential>
+		</for>
+	</target>
+	
+	<target name="checkBackupPath" >
+		<if>
+			<or>
+				<not>
+					<isset property="BACKUP_PATH" />
+				</not>
+				<equals arg1="${BACKUP_PATH}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># BACKUP_PATH(백업경로) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="BACKUP_PATH not set. Check Jenkins configuration." />
+			</then>
+		</if>
+	</target>
+		
+	<target name="checkDeployPath" >
+		<!-- DEPLOY_PATH 가 입력되었고 실제 경로가 존재하는지 확인 -->
+		<if>
+			<or>
+				<not>
+					<isset property="DEPLOY_PATH" />
+				</not>
+				<equals arg1="${DEPLOY_PATH}" arg2="" />
+			</or>
+			<then>
+				<echo>####################################################</echo>
+				<echo># DEPLOY_PATH(배포경로) 정보가 없습니다. #</echo>
+				<echo>####################################################</echo>
+				<fail message="DEPLOY_PATH not set. Check Jenkins configuration." />
+			</then>
+			<elseif>
+				<not>
+					<available file="${DEPLOY_PATH}" type="dir" />
+				</not>
+				<then>
+					<echo>####################################################</echo>
+					<echo># DEPLOY_PATH(배포경로) 가 존재하지 않습니다. ${DEPLOY_PATH} #</echo>
+					<echo>####################################################</echo>
+					<fail message="DEPLOY_PATH does not exist. ${DEPLOY_PATH}" />
+				</then>
+			</elseif>
+		</if>
+	</target>
+	
+	<!-- rollback ${build.no} backup -->
+	<target name="changedRollback">
+		<echo> #####################################################</echo>
+		<echo> Rollback ${build.no}</echo>
+		
+		<!-- backupspace가 존재하고 backuplist 파일에 파일 목록이 기록되어 있어야만 수행한다. -->
+		<if>
+			<and>
+				<available file="${BACKUP_PATH}/${build.no}/backupspace" type="dir" />
+				<available file="${BACKUP_PATH}/${build.no}/backuplist" />
+				<length file="${BACKUP_PATH}/${build.no}/backuplist" when="greater" length="0" />
+			</and>
+			<then>
+				<copy todir="${deploy.home}" failonerror="true" overwrite="true" verbose="true">
+					<fileset dir="${BACKUP_PATH}/${build.no}/backupspace">
+						<includesfile name="${BACKUP_PATH}/${build.no}/backuplist" />
+						<excludesfile name="config/deploy_web.excludes" />
+						<excludesfile name="config/preserve_original_web.includes" />
+					</fileset>
+				</copy>
+		
+				<loadfile property="backupList" srcfile="${BACKUP_PATH}/${build.no}/backuplist" />
+				<echo> New File List(not deleted from DEPLOY_PATH)</echo>
+				<echo> -----------------------------------------------------</echo>
+				<for param="file" list="${backupList}" delimiter="${line.separator}">
+					<sequential>
+						<if>
+							<not>
+								<available file="${BACKUP_PATH}/${build.no}/backupspace/@{file}" />
+							</not>
+							<then>
+								<echo> @{file}</echo>
+								<!--
+								<delete file="${deploy.home}/@{file}" />
+								-->
+							</then>
+						</if>
+					</sequential>
+				</for>
+				<echo> -----------------------------------------------------</echo>
+			</then>
+			<else>
+				<echo> There are no files backed up. Skip ${build.no}</echo>
+			</else>
+		</if>
+		
+		<touch file="${BACKUP_PATH}/${build.no}/rollback" />
+		<echo> #####################################################</echo>
+	</target>
+
+	<!-- TARGET_BUILD_NUMBER가 올바른지 확인한다. -->
+	<!-- 1. TARGET_BUILD_NUMBER 폴더가 실제로 존재하는지 확인. -->
+	<!-- 2. TARGET_BUILD_NUMBER 가 롤백된 적이 있는지 확인. -->
+	<!-- 3. buildlist에 존재하는지 확인. buildlist에 없으면 정상적인 백업이 아니라 누군가 그냥 만든 폴더일 수 있다. -->
+	<target name="checkTargetBuildNo">
+		<if>
+			<and>
+				<isset property="TARGET_BUILD_NUMBER" />
+				<not>
+					<equals arg1="${TARGET_BUILD_NUMBER}" arg2="" />
+				</not>
+			</and>
+			<then>
+				<!-- TARGET_BUILD_NUMBER 가 있는 경우 -->
+				<property name="target.isset" value="true" />
+				<echo>TARGET_BUILD_NUMBER : ${TARGET_BUILD_NUMBER}</echo>
+
+				<if>
+					<not>
+						<available file="${BACKUP_PATH}/${TARGET_BUILD_NUMBER}" type="dir" />
+					</not>
+					<then>
+						<echo>There are not backup files for build number #${TARGET_BUILD_NUMBER}.</echo>
+						<antcall target="printExistingBackupList" />
+						<fail message="There are not backup files for build number #${TARGET_BUILD_NUMBER}. ${BACKUP_PATH}/${TARGET_BUILD_NUMBER}" />
+					</then>
+					<elseif>
+						<available file="${BACKUP_PATH}/${TARGET_BUILD_NUMBER}/rollback" />
+						<then>
+							<echo>${TARGET_BUILD_NUMBER} is already rollbacked.</echo>
+							<antcall target="printExistingBackupList" />
+							<fail message="${TARGET_BUILD_NUMBER} is already rollbacked. ${BACKUP_PATH}/${TARGET_BUILD_NUMBER}" />
+						</then>
+					</elseif>
+					<else>
+						<!-- buildlist 파일 확인 -->
+						<for param="buildNo" list="${buildlist}" delimiter="${line.separator}">
+							<sequential>
+								<if>
+									<equals arg1="${TARGET_BUILD_NUMBER}" arg2="@{buildNo}" />
+									<then>
+										<property name="target.isvalid" value="true" />
+									</then>
+								</if>
+							</sequential>
+						</for>
+						<if>
+							<not>
+								<isset property="target.isvalid" />
+							</not>
+							<then>
+								<echo>There's no build (${TARGET_BUILD_NUMBER}) in buildlist.</echo>
+								<echo>It may be not valid backup folder. --- ${BACKUP_PATH}/${TARGET_BUILD_NUMBER}</echo>
+								<antcall target="printExistingBackupList" />
+								<fail message="There no Target (${TARGET_BUILD_NUMBER}) in buildlist." />
+							</then>
+						</if>
+					</else>
+				</if>
+			</then>
+			<else>
+				<!-- TARGET_BUILD_NUMBER가 입력되지 않은 경우 -->
+				<echo>No TARGET_BUILD_NUMBER is set. Trying to rollback last build.</echo>
+			</else>
+		</if>
+
+	</target>
+
+	<!-- 롤백시킬 빌드 번호들을 롤백 할 순서대로 수집한다. -->
+	<target name="getTargetBuildList">
+		<if>
+			<equals arg1="${target.isset}" arg2="true" />
+			<then>
+				<!-- TARGET_BUILD_NUMBER가 세팅되어 있는 경우 롤백 할 빌드 번호를 모두 가져온다. -->
+				<antcallback target="getRollbackBuildNumberToTarget" return="target.build.list" />
+			</then>
+			<else>
+				<!-- TARGET_BUILD_NUMBER가 세팅되어있지 않은 경우 latestBuild 번호를 가져온다.-->
+				<antcallback target="getLatestBuild" return="target.build.list" />
+			</else>
+		</if>
+
+		<echo>Build numbers to rollback : ${target.build.list}</echo>
+	</target>
+
+	<!-- TARGET_BUILD_NUMBER가 가 세팅되어 있는 경우 롤백할 모든 build 번호를 수집한다. -->
+	<target name="getRollbackBuildNumberToTarget" >
+		<var name="target.list.var" value="" />
+
+		<for param="buildNo" list="${buildlist}" delimiter="${line.separator}">
+			<sequential>
+				<if>
+					<isset property="hit.target" />
+					<then>
+						<!-- 이미 TARGET_BUILD_NUMBER 까지 모두 수집했으므로 스킵.-->
+					</then>
+					<else>
+						<!-- 아직 TARGET_BUILD_NUMBER까지 가지 않았으므로 올바른 백업인지 확인하고 추가-->
+						<if>
+							<available file="${BACKUP_PATH}/@{buildNo}" />
+							<then>
+								<if>
+									<available file="${BACKUP_PATH}/@{buildNo}/rollback" />
+									<then>
+										<!-- 이미 롤백 된 빌드이므로 스킵.-->
+									</then>
+									<else>
+										<if>
+											<equals arg1="${target.list.var}" arg2="" />
+											<then>
+												<var name="target.list.var" value="@{buildNo}" />
+											</then>
+											<else>
+												<var name="target.list.var" value="${target.list.var},@{buildNo}" />
+											</else>
+										</if>
+										<echo>Add to rollback list : @{buildNo}</echo>
+									</else>
+								</if>
+							</then>
+						</if>
+
+						<if>
+							<equals arg1="${TARGET_BUILD_NUMBER}" arg2="@{buildNo}" />
+							<then>
+								<!-- TARGET_BUILD_NUMBER 까지의 모든 build를 체크했으므로 이후의 build는 스킵한다. -->
+								<property name="hit.target" value="true" />
+							</then>
+						</if>
+					</else>
+				</if>
+			</sequential>
+		</for>
+		<property name="target.build.list" value="${target.list.var}" />
+	</target>
+
+	<!-- 최종 빌드 넘버를 가져온다. -->
+	<target name="getLatestBuild" >
+		<for param="build.no" list="${buildlist}" delimiter="${line.separator}">
+			<sequential>
+				<if>
+					<not>
+						<isset property="latest" />
+					</not>
+					<then>
+						<property name="latest" value="@{build.no}"/>
+					</then>
+				</if>
+			</sequential>
+		</for>
+
+		<echo>${BACKUP_PATH}/${latest}/rollback</echo>
+		<if>
+			<available file="${BACKUP_PATH}" type="dir" />
+			<then>
+				<if>
+					<available file="${BACKUP_PATH}/${latest}/rollback" />
+					<then>
+						<echo>Last build is already rollbacked. ${latest} </echo>
+						<antcall target="printExistingBackupList" />
+						<fail message="Last build is already rollbacked. ${latest}" />
+					</then>
+					<else>
+						<echo>Last build is ${latest}. </echo>
+						<property name="target.build.list" value="${latest}" />
+					</else>
+				</if>
+			</then>
+			<else>
+				<echo>Backup folder does not exists. : ${BACKUP_PATH}/${latest}</echo>
+				<antcall target="printExistingBackupList" />
+				<fail message="Backup folder does not exists. : ${BACKUP_PATH}/${latest}"/>
+			</else>
+		</if>
+	</target>
+
+	<!-- print backup list -->
+	<target name="printExistingBackupList">
+		<echo>Check build number to rollback and try again.</echo>
+
+		<echo> ########################################################### </echo>
+		<echo> Backup List </echo>
+		<echo> =========================================================== </echo>
+		<echo> Build No.		Created Time 		Is Rollbacked</echo>
+		<echo> =========================================================== </echo>
+
+		<loadfile property="backup.list" srcfile="${BACKUP_PATH}/buildlist" />
+
+		<for list="${backup.list}" param="backup.no" delimiter="${line.separator}">
+			<sequential>
+				<if>
+					<available file="${BACKUP_PATH}/@{backup.no}/rollback" />
+					<then>
+						<property name="@{backup.no}.rollback" value="Y" />
+					</then>
+					<else>
+						<property name="@{backup.no}.rollback" value="N" />
+					</else>
+				</if>
+				<if>
+					<available file="${BACKUP_PATH}/@{backup.no}/created" />
+					<then>
+						<loadfile property="@{backup.no}.created" srcfile="${BACKUP_PATH}/@{backup.no}/created" />
+						<echo>	#@{backup.no}		${@{backup.no}.created}	${@{backup.no}.rollback}</echo>
+					</then>
+					<else>
+						<echo>	#@{backup.no}		N/A			${@{backup.no}.rollback}</echo>
+					</else>
+				</if>
+			</sequential>
+		</for>
+
+		<echo> =========================================================== </echo>
+		<loadfile property="latest" srcfile="${BACKUP_PATH}/latest" />
+		<echo> latest : ${latest}</echo>
+		<echo> ########################################################### </echo>
+	</target>
+</project>

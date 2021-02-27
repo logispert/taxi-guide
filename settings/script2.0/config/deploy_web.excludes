@@ -1,0 +1,7 @@
+**/*.svn
+**/*.pdb
+**/*.cs
+**/*.user
+**/*.csproj
+**/*Debug.config
+**/*Release.config
