@@ -1,12 +1,9 @@
+
 package taxiguider;
 
-public class 택시호출요청됨 extends AbstractEvent {
+public class 할당확인됨 extends AbstractEvent {
 
     private Long id;
-
-    public 택시호출요청됨(){
-        super();
-    }
 
     public Long getId() {
         return id;

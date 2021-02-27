@@ -1,8 +1,16 @@
 package taxiguider;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+
 import org.springframework.beans.BeanUtils;
-import java.util.List;
+
+import taxiguider.external.TaxiManagement;
+import taxiguider.external.TaxiManagementService;
 
 @Entity
 @Table(name="TaxiCall_table")
@@ -21,9 +29,9 @@ public class TaxiCall {
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
-        .external.TaxiManagement taxiManagement = new .external.TaxiManagement();
+        TaxiManagement taxiManagement = new TaxiManagement();
         // mappings goes here
-        Application.applicationContext.getBean(.external.TaxiManagementService.class)
+        TaxicallApplication.applicationContext.getBean(TaxiManagementService.class)
             .택시할당요청(taxiManagement);
 
 
