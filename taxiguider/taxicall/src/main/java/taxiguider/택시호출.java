@@ -52,10 +52,13 @@ public class 택시호출 {
 	        // mappings goes here
 	        TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
 		}
-    	
-//        호출취소됨 호출취소됨 = new 호출취소됨();
-//        BeanUtils.copyProperties(this, 호출취소됨);
-//        호출취소됨.publishAfterCommit();
+
+		//호출 상태 취소
+		if(this.get호출상태().equals("호출취소") && get휴대폰번호() != null){
+			호출취소됨 호출취소됨 = new 호출취소됨();
+			BeanUtils.copyProperties(this, 호출취소됨);
+			호출취소됨.publishAfterCommit();
+		}
     }
 
 
