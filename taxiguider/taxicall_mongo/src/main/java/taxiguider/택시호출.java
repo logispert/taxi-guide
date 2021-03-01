@@ -1,21 +1,18 @@
 package taxiguider;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.PostPersist;
-import javax.persistence.Table;
+
+import org.springframework.data.annotation.Id;
 
 import taxiguider.external.택시관리;
 import taxiguider.external.택시관리Service;
 
-@Entity
-@Table(name="택시호출_table")
+//@Entity
+//@Table(name="택시호출_table")
 public class 택시호출 {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    //@GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private String 휴대폰번호;
     private String 호출위치;
@@ -23,7 +20,7 @@ public class 택시호출 {
     private Integer 예상요금;
     
 	
-    @PostPersist
+//    @PostPersist
     public void onPostPersist(){
 //        택시호출요청됨 택시호출요청됨 = new 택시호출요청됨();
 //        BeanUtils.copyProperties(this, 택시호출요청됨);
