@@ -1,6 +1,5 @@
 package taxiguider;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;

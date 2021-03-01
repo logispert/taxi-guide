@@ -32,16 +32,15 @@ public class 택시호출PolicyHandler {
 			
 
 			// Correlation id 는 '고객휴대폰번호' 임
-			if(할당확인됨.getId() != null)
-				택시호출Repository.findById(Long.valueOf(할당확인됨.getId())).ifPresent((택시호출) -> {
-					택시호출.set호출상태("호출확정");
-					택시호출Repository.save(택시호출);
-				});
-//			택시호출Repository.findBy휴대폰번호(할당확인됨.get고객휴대폰번호()).ifPresent((택시호출) -> {
-//				System.out.println("할당확인됨 = " + 할당확인됨.get고객휴대폰번호());
-//				택시호출.set호출상태("호출확정");
-//				택시호출Repository.save(택시호출);
-//			});
+			택시호출Repository.findById(Long.valueOf(할당확인됨.getId())).ifPresent((택시호출) -> {
+				택시호출.set호출상태("호출확정");
+				택시호출Repository.save(택시호출);
+			});
+			택시호출Repository.findBy휴대폰번호(할당확인됨.get고객휴대폰번호()).ifPresent((택시호출) -> {
+				System.out.println("할당확인됨 = " + 할당확인됨.get고객휴대폰번호());
+				택시호출.set호출상태("호출확정");
+				택시호출Repository.save(택시호출);
+			});
 		}
 
 //		if (할당확인됨.isMe()) {

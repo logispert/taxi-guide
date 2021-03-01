@@ -35,11 +35,11 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       bindings:
         event-in:
-          group: store
-          destination: fooddelivery
+          group: taximanage
+          destination: taxiguider
           contentType: application/json
         event-out:
-          destination: fooddelivery
+          destination: taxiguider
           contentType: application/json
 
 logging:
@@ -47,7 +47,7 @@ logging:
     org.hibernate.type: trace
     org.springframework.cloud: debug
 server:
-  port: 8083
+  port: 8082
 ---
 
 spring:

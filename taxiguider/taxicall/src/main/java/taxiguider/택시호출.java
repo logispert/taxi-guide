@@ -39,7 +39,7 @@ public class 택시호출 {
 		{
     		System.out.println("SEND###############################" + getId());
 			택시관리 택시관리 = new 택시관리();
-	        
+			택시관리.setId(getId());
 			택시관리.setOrderId(String.valueOf(getId()));
 	        택시관리.set고객휴대폰번호(get휴대폰번호());
 	        if(get호출위치()!=null) 
