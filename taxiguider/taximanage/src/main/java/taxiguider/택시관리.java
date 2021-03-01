@@ -48,12 +48,9 @@ public class 택시관리 {
     	
         
         if("호출취소".equals(호출상태)){
-//            결제취소됨 결제취소됨 = new 결제취소됨();
-//            BeanUtils.copyProperties(this, 결제취소됨);
-//            결제취소됨.publish();
-//        	택시할당취소됨 택시할당취소됨 = new 택시할당취소됨();
-//            BeanUtils.copyProperties(this, 택시할당취소됨);
-//            택시할당취소됨.publish();
+			택시할당취소됨 택시할당취소됨 = new 택시할당취소됨();
+            BeanUtils.copyProperties(this, 택시할당취소됨);
+            택시할당취소됨.publish();
 
         }else{
 //            결제승인됨 결제승인됨 = new 결제승인됨();
