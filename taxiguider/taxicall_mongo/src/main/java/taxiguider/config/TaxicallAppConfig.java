@@ -10,7 +10,7 @@ import taxiguider.택시호출RepositoryListener;
 @EnableMongoAuditing
 public class TaxicallAppConfig {
 	@Bean
-    public 택시호출RepositoryListener orderRepositoryListener() {
+    public 택시호출RepositoryListener 택시호출RepositoryListener() {
         return new 택시호출RepositoryListener();
     }
 

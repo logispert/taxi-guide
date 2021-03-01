@@ -42,11 +42,11 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       bindings:
         event-in:
-          group: app
-          destination: fooddelivery
+          group: taxicall
+          destination: taxiguider
           contentType: application/json
         event-out:
-          destination: fooddelivery
+          destination: taxiguider
           contentType: application/json
 
 logging:

@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.PostPersist;
 import javax.persistence.Table;
 
+import org.springframework.beans.BeanUtils;
+
 import taxiguider.external.택시관리;
 import taxiguider.external.택시관리Service;
 
