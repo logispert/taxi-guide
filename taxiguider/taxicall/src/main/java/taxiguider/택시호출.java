@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PostPersist;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import org.springframework.beans.BeanUtils;
@@ -66,13 +67,10 @@ public class 택시호출 {
 		//Following code causes dependency to external APIs
 		// it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
-		OrderApplication.applicationContext.getBean(searchrecipe.external.CancellationService.class)
-				.cancel(cancellation);
-
 		택시관리 택시관리 = new 택시관리();
 		// mappings goes here
 		택시관리.setId(getId());
-		택시관리.setOrderId(this.getId());
+		택시관리.setOrderId(String.valueOf(getId()));
 		택시관리.set호출상태("호출취소");
 		택시관리.set고객휴대폰번호(get휴대폰번호());
 

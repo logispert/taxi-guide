@@ -60,7 +60,7 @@ public class 택시호출PolicyHandler {
 			System.out.println("##### listener[할당취소됨]  : " + 할당취소됨.toJson());
 			택시호출Repository.findById(Long.valueOf(할당취소됨.getId())).ifPresent((택시호출) -> {
 				택시호출.set호출상태("호출취소");
-				택시호출Repository.save(할당취소됨);
+				택시호출Repository.save(택시호출);
 			});
 		}
 	}
