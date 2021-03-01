@@ -27,11 +27,12 @@ public class 택시호출RepositoryListener extends AbstractMongoEventListener<�
 
 		택시관리 taxiM = event.getSource();
 		Document d = event.getDocument();
-
+		System.out.println("===============>>>>>>=======================" + taxiM.getId());
 		if (taxiM.getId() == null) {
 			// TODO use a better UUID generator in production
 			d.put("_id", "" + (int) Math.floor(Math.random() * 100));
 			// d.put("id","" + (int)Math.floor(Math.random()*100) );
+			taxiM.setId((long)Math.floor(Math.random() * 100));
 		}
 
 	}
