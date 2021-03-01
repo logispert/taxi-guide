@@ -11,7 +11,6 @@ public class 택시호출정보 {
         @GeneratedValue(strategy=GenerationType.AUTO)
         private Long id;
 
-
         public Long getId() {
             return id;
         }
