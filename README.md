@@ -985,3 +985,24 @@ http localhost:8088/orders/1
 ![image](senario/할당시나리오_v2.png "할당시나리오2")
 
 ![image](senario/할당취소시나리오.png "할당취소시나리오")
+
+```
+feign:
+  hystrix:
+    enabled: true
+
+# To set thread isolation to SEMAPHORE
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          strategy: SEMAPHORE
+
+hystrix:
+  command:
+    # 전역설정
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 610
+
+```
