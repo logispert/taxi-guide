@@ -22,14 +22,16 @@ public class 택시할당 {
     @PrePersist
     public void onPrePersist(){
     	System.out.println("==============택시할당================");
-//        할당확인됨 할당확인됨 = new 할당확인됨();
-//        BeanUtils.copyProperties(this, 할당확인됨);
-//        할당확인됨.publishAfterCommit();
-//
-//
-//        할당취소됨 할당취소됨 = new 할당취소됨();
-//        BeanUtils.copyProperties(this, 할당취소됨);
-//        할당취소됨.publishAfterCommit();
+
+
+        할당확인됨 할당확인됨 = new 할당확인됨();
+        BeanUtils.copyProperties(this, 할당확인됨);
+        할당확인됨.publishAfterCommit();
+
+
+        할당취소됨 할당취소됨 = new 할당취소됨();
+        BeanUtils.copyProperties(this, 할당취소됨);
+        할당취소됨.publishAfterCommit();
     }
 
 
@@ -46,7 +48,6 @@ public class 택시할당 {
 		return 호출상태;
 	}
 
-
 	public void set호출상태(String 호출상태) {
 		this.호출상태 = 호출상태;
 	}
@@ -55,7 +56,6 @@ public class 택시할당 {
 	public String get택시번호() {
 		return 택시번호;
 	}
-
 
 	public void set택시번호(String 택시번호) {
 		this.택시번호 = 택시번호;
@@ -66,7 +66,6 @@ public class 택시할당 {
 		return 택시기사이름;
 	}
 
-
 	public void set택시기사이름(String 택시기사이름) {
 		this.택시기사이름 = 택시기사이름;
 	}
@@ -76,11 +75,9 @@ public class 택시할당 {
 		return 택시기사전화번호;
 	}
 
-
 	public void set택시기사전화번호(String 택시기사전화번호) {
 		this.택시기사전화번호 = 택시기사전화번호;
 	}
-
 
 
 

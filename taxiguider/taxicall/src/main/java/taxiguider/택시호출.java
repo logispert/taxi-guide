@@ -53,13 +53,30 @@ public class 택시호출 {
 	        TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
 		}
 
-		//호출 상태 취소
-		if(this.get호출상태().equals("호출취소") && get휴대폰번호() != null){
-			호출취소됨 호출취소됨 = new 호출취소됨();
-			BeanUtils.copyProperties(this, 호출취소됨);
-			호출취소됨.publishAfterCommit();
-		}
     }
+
+	@PreRemove
+	public void onPreRemove(){
+		호출취소됨 호출취소됨 = new 호출취소됨();
+		BeanUtils.copyProperties(this, 호출취소됨);
+		호출취소됨.publishAfterCommit();
+
+		//Following code causes dependency to external APIs
+		// it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
+
+		OrderApplication.applicationContext.getBean(searchrecipe.external.CancellationService.class)
+				.cancel(cancellation);
+
+		택시관리 택시관리 = new 택시관리();
+		// mappings goes here
+		택시관리.setId(getId());
+		택시관리.setOrderId(this.getId());
+		택시관리.set호출상태("호출취소");
+		택시관리.set고객휴대폰번호(get휴대폰번호());
+
+		// mappings goes here
+		TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
+	}
 
 
     public Long getId() {
