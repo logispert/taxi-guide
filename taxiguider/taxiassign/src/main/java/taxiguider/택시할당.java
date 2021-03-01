@@ -24,14 +24,14 @@ public class 택시할당 {
     	System.out.println("==============택시할당================");
 
 
-        할당확인됨 할당확인됨 = new 할당확인됨();
-        BeanUtils.copyProperties(this, 할당확인됨);
-        할당확인됨.publishAfterCommit();
+        //할당확인됨 할당확인됨 = new 할당확인됨();
+        //BeanUtils.copyProperties(this, 할당확인됨);
+        //할당확인됨.publishAfterCommit();
 
 
-        할당취소됨 할당취소됨 = new 할당취소됨();
-        BeanUtils.copyProperties(this, 할당취소됨);
-        할당취소됨.publishAfterCommit();
+        //할당취소됨 할당취소됨 = new 할당취소됨();
+        //BeanUtils.copyProperties(this, 할당취소됨);
+        //할당취소됨.publishAfterCommit();
     }
 
 
