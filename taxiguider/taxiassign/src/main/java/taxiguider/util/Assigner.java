@@ -14,14 +14,14 @@ public class Assigner {
 		{"유승오", "010-7345-1789", "84사4567"}
 	};
 	
-	public static TaxiassignCompleted getTaxiassign됨() {
+	public static TaxiassignCompleted getTaxiassignCompleted() {
 		TaxiassignCompleted taxiassignCompleted = new TaxiassignCompleted();
 		
 		int randDriver = (int)(Math.random() * 6);
-		TaxiassignCompleted.setDriver(driverBank[randDriver][0]);
-		TaxiassignCompleted.setDrivertel(driverBank[randDriver][1]);
-        TaxiassignCompleted.setTaxiid(driverBank[randDriver][2]);
-        return TaxiassignCompleted;
+		taxiassignCompleted.setDriver(driverBank[randDriver][0]);
+		taxiassignCompleted.setDrivertel(driverBank[randDriver][1]);
+		taxiassignCompleted.setTaxiid(driverBank[randDriver][2]);
+        return taxiassignCompleted;
 	}
 
 }

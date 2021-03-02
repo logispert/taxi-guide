@@ -1,7 +1,7 @@
 
 package taxiguider;
 
-public class TaxiassignCompleted extends AbstractEvent {
+public class TaxiassignCancelled extends AbstractEvent {
 
     private Long id;
     private String status; //호출,호출중,호출확정,호출취소
