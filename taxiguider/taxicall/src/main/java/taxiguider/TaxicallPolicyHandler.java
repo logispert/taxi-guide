@@ -33,7 +33,7 @@ public class TaxicallPolicyHandler {
 
 			// Correlation id 는 'tel' 임
 			if(taxiassignCompleted.getId() != null)
-				TaxicallRepository.findById(Long.valueOf(taxiassignCompleted.getId())).ifPresent((taxicall) -> {
+				taxicallRepository.findById(Long.valueOf(taxiassignCompleted.getId())).ifPresent((taxicall) -> {
 					taxicall.setStatus("호출확정");
 					taxicallRepository.save(taxicall);
 				});
