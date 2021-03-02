@@ -18,9 +18,9 @@ public class TaxicallPolicyHandler {
 	}
 
 	@StreamListener(KafkaProcessor.INPUT)
-	public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted TaxiassignCompleted) {
-		System.out.println("##### EVT TYPE[TaxiassignCompleted]  : " + TaxiassignCompleted.getEventType());
-		if (TaxiassignCompleted.isMe() && TaxiassignCompleted.getTel() != null) {
+	public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted taxiassignCompleted) {
+		System.out.println("##### EVT TYPE[TaxiassignCompleted]  : " + taxiassignCompleted.getEventType());
+		if (taxiassignCompleted.isMe() && taxiassignCompleted.getTel() != null) {
 
 //           try {
 //               // 원래 데이터가 트랜잭션 커밋되기도 전에 이벤트가 너무 빨리 도달하는 경우를 막기 위함
@@ -33,9 +33,9 @@ public class TaxicallPolicyHandler {
 
 			// Correlation id 는 'tel' 임
 			if(TaxiassignCompleted.getId() != null)
-				TaxicallRepository.findById(Long.valueOf(TaxiassignCompleted.getId())).ifPresent((Taxicall) -> {
-					Taxicall.setStatus("호출확정");
-					TaxicallRepository.save(Taxicall);
+				TaxicallRepository.findById(Long.valueOf(TaxiassignCompleted.getId())).ifPresent((taxicall) -> {
+					taxicall.setStatus("호출확정");
+					taxicallRepository.save(taxicall);
 				});
 //			TaxicallRepository.findBytel(TaxiassignCompleted.getTel()).ifPresent((Taxicall) -> {
 //				System.out.println("taxiassignCompleted = " + TaxiassignCompleted.getTel());
@@ -54,11 +54,11 @@ public class TaxicallPolicyHandler {
 	}
 
 	@StreamListener(KafkaProcessor.INPUT)
-	public void wheneverTaxiassignCancelled_(@Payload TaxiassignCancelled TaxiassignCancelled) {
-		System.out.println("##### EVT TYPE[TaxiassignCancelled]  : " + TaxiassignCancelled.getEventType());
-		if (TaxiassignCancelled.isMe()) {
-			System.out.println("##### listener[TaxiassignCancelled]  : " + TaxiassignCancelled.toJson());
-			TaxicallRepository.findById(Long.valueOf(TaxiassignCancelled.getId())).ifPresent((Taxicall) -> {
+	public void wheneverTaxiassignCancelled_(@Payload TaxiassignCancelled taxiassignCancelled) {
+		System.out.println("##### EVT TYPE[TaxiassignCancelled]  : " + taxiassignCancelled.getEventType());
+		if (taxiassignCancelled.isMe()) {
+			System.out.println("##### listener[TaxiassignCancelled]  : " + taxiassignCancelled.toJson());
+			taxicallRepository.findById(Long.valueOf(TaxiassignCancelled.getId())).ifPresent((Taxicall) -> {
 				Taxicall.setStatus("호출취소");
 				TaxicallRepository.save(Taxicall);
 			});
