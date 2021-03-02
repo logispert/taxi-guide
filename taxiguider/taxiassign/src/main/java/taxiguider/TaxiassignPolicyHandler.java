@@ -18,25 +18,25 @@ public class TaxiassignPolicyHandler{
     
     //private String status; //호출,호출중,호출확정,호출취소
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverTaximanageAssigned_(@Payload TaximanageAssigned TaximanageAssigned){
-    	System.out.println("##### EVT TYPE[TaximanageAssigned]  : " + TaximanageAssigned.getEventType());
-        if(TaximanageAssigned.isMe()){
-            System.out.println("##### listener  : " + TaximanageAssigned.toJson());
+    public void wheneverTaximanageAssigned_(@Payload TaximanageAssigned taximanageAssigned){
+    	System.out.println("##### EVT TYPE[TaximanageAssigned]  : " + taximanageAssigned.getEventType());
+        if(taximanageAssigned.isMe()){
+            System.out.println("##### listener  : " + taximanageAssigned.toJson());
             
-            if(TaximanageAssigned.getStatus() != null  && TaximanageAssigned.getStatus().equals("호출중"))
+            if(taximanageAssigned.getStatus() != null  && taximanageAssigned.getStatus().equals("호출중"))
             {
-            	
-            	TaximanageAssigned.setStatus("호출확정");
+
+                taximanageAssigned.setStatus("호출확정");
             	//TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassign됨();
             	//BeanUtils.copyProperties(TaximanageAssigned, TaxiassignCompleted);
             	//TaxiassignCompleted.setEventType("TaxiassignCompleted");
-            	TaximanageAssigned.publish();
+                taximanageAssigned.publish();
             	
-            	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassign됨();
-            	TaxiassignCompleted.setId(TaximanageAssigned.getId());
+            	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassignCompleted();
+            	TaxiassignCompleted.setId(taximanageAssigned.getId());
             	TaxiassignCompleted.setStatus("할당확정");
-                TaxiassignCompleted.setTel(TaximanageAssigned.getTel());
-                TaxiassignCompleted.setLocation(TaximanageAssigned.get고객위치());
+                TaxiassignCompleted.setTel(taximanageAssigned.getTel());
+                TaxiassignCompleted.setLocation(taximanageAssigned.get고객위치());
             	TaxiassignCompleted.setEventType("TaxiassignCompleted");
             	//TaximanageAssigned.publishAfterCommit();
             	TaxiassignCompleted.publish();
@@ -45,12 +45,12 @@ public class TaxiassignPolicyHandler{
     }
     
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted TaxiassignCompleted){
-    	System.out.println("##### EVT TYPE[TaxiassignCompleted]  : " + TaxiassignCompleted.getEventType());
-        if(TaxiassignCompleted.isMe()){
-            System.out.println("##### listener  : " + TaxiassignCompleted.toJson());
+    public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted taxiassignCompleted){
+    	System.out.println("##### EVT TYPE[TaxiassignCompleted]  : " + taxiassignCompleted.getEventType());
+        if(taxiassignCompleted.isMe()){
+            System.out.println("##### listener  : " + taxiassignCompleted.toJson());
             
-            if(TaxiassignCompleted.getStatus() != null  && TaxiassignCompleted.getStatus().equals("할당확정"))
+            if(taxiassignCompleted.getStatus() != null  && taxiassignCompleted.getStatus().equals("할당확정"))
             {
             	
 //            	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassign됨();
@@ -66,18 +66,18 @@ public class TaxiassignPolicyHandler{
     
     
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverTaximanageCancelled_(@Payload TaximanageCancelled TaximanageCancelled){
+    public void wheneverTaximanageCancelled_(@Payload TaximanageCancelled taximanageCancelled){
     	
-        if(TaximanageCancelled.isMe()){
-            System.out.println("##### listener  : " + TaximanageCancelled.toJson());
-            
-            
-            할당Repository.findById(Long.valueOf(TaximanageCancelled.getId())).ifPresent((Taxicall) -> {
-				Taxicall.setStatus("할당취소");
-				할당Repository.save(Taxicall);
+        if(taximanageCancelled.isMe()){
+            System.out.println("##### listener  : " + taximanageCancelled.toJson());
+
+
+            taxiassignRepository.findById(Long.valueOf(TaximanageCancelled.getId())).ifPresent((taxicall) -> {
+                taxicall.setStatus("할당취소");
+                taxiassignRepository.save(taxicall);
 			});
-            
-            TaximanageCancelled.publish();
+
+            taximanageCancelled.publish();
         }
     }
 
