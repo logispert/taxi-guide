@@ -53,7 +53,7 @@ public class Taxicall {
 	        	taximanage.setCost(getCost());
 	        
 	        // mappings goes here
-	        TaxicallApplication.applicationContext.getBean(TaximanageService.class).TaximanageAssign(Taximanage);
+	        TaxicallApplication.applicationContext.getBean(TaximanageService.class).TaximanageAssign(taximanage);
 		}
 
     }
