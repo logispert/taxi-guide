@@ -83,7 +83,7 @@ public class Taximanage {
 			taximanageAssigned.setCost(cost);
 			taximanageAssigned.setStatus(status);
             BeanUtils.copyProperties(this, taximanageAssigned);
-            TaximanageAssigned.publishAfterCommit();
+			taximanageAssigned.publishAfterCommit();
             
             
             // 테스트 코드~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

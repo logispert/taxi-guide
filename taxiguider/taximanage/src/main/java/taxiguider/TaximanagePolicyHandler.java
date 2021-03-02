@@ -18,31 +18,31 @@ public class TaximanagePolicyHandler {
 	}
 
 	@StreamListener(KafkaProcessor.INPUT)
-	public void wheneverTaxicallCancelled_(@Payload TaxicallCancelled TaxicallCancelled) {
-		System.out.println("##### EVT TYPE[TaxicallCancelled]  : " + TaxicallCancelled.getEventType());
+	public void wheneverTaxicallCancelled_(@Payload TaxicallCancelled taxicallCancelled) {
+		System.out.println("##### EVT TYPE[TaxicallCancelled]  : " + taxicallCancelled.getEventType());
 		if (TaxicallCancelled.isMe()) {
-			System.out.println("##### listener  : " + TaxicallCancelled.toJson());
+			System.out.println("##### listener  : " + taxicallCancelled.toJson());
 
 			if (TaxicallCancelled.getId() != null)
 				// Correlation id 는 'tel' 임
-				TaximanageRepository.findById(Long.valueOf(TaxicallCancelled.getId())).ifPresent((Taximanage) -> {
+				taximanageRepository.findById(Long.valueOf(taxicallCancelled.getId())).ifPresent((Taximanage) -> {
 					taximanage.setStatus("호출요청취소됨");
-					TaximanageRepository.save(Taximanage);
+					taximanageRepository.save(Taximanage);
 				});
 		}
 	}
 
 	@StreamListener(KafkaProcessor.INPUT)
-	public void wheneverTaximanageAssigned_(@Payload TaximanageAssigned TaximanageAssigned) {
-		System.out.println("##### EVT TYPE[TaximanageAssigned]  : " + TaximanageAssigned.getEventType());
-		if (TaximanageAssigned.isMe()) {
-			System.out.println("##### listener[TaxiassignCompleted]  : " + TaximanageAssigned.toJson());
+	public void wheneverTaximanageAssigned_(@Payload TaximanageAssigned taximanageAssigned) {
+		System.out.println("##### EVT TYPE[TaximanageAssigned]  : " + taximanageAssigned.getEventType());
+		if (taximanageAssigned.isMe()) {
+			System.out.println("##### listener[TaxiassignCompleted]  : " + taximanageAssigned.toJson());
 
-			if (TaximanageAssigned.getId() != null)
+			if (taximanageAssigned.getId() != null)
 				// Correlation id 는 'tel' 임
-				TaximanageRepository.findById(Long.valueOf(TaximanageAssigned.getId())).ifPresent((Taximanage) -> {
-					taximanage.setStatus(TaximanageAssigned.getStatus());
-					TaximanageRepository.save(Taximanage);
+				taximanageRepository.findById(Long.valueOf(taximanageAssigned.getId())).ifPresent((Taximanage) -> {
+					taximanage.setStatus(taximanageAssigned.getStatus());
+					taximanageRepository.save(taximanage);
 				});
 
 //        	TaximanageRepository.findBytel(TaximanageAssigned.getTel()).ifPresent((Taximanage) -> {
