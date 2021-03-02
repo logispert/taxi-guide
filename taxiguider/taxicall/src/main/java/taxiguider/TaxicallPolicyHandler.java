@@ -33,7 +33,7 @@ public class TaxicallPolicyHandler {
 
 			// Correlation id 는 'tel' 임
 			if(TaxiassignCompleted.getId() != null)
-				TaxicallRepository.findById(Long.valueOf(TaxiassignCompleted.getId())).ifPresent((taxicall) -> {
+				TaxicallRepository.findById(Long.valueOf(taxiassignCompleted.getId())).ifPresent((taxicall) -> {
 					taxicall.setStatus("호출확정");
 					taxicallRepository.save(taxicall);
 				});
@@ -58,9 +58,9 @@ public class TaxicallPolicyHandler {
 		System.out.println("##### EVT TYPE[TaxiassignCancelled]  : " + taxiassignCancelled.getEventType());
 		if (taxiassignCancelled.isMe()) {
 			System.out.println("##### listener[TaxiassignCancelled]  : " + taxiassignCancelled.toJson());
-			taxicallRepository.findById(Long.valueOf(TaxiassignCancelled.getId())).ifPresent((Taxicall) -> {
-				Taxicall.setStatus("호출취소");
-				TaxicallRepository.save(Taxicall);
+			taxicallRepository.findById(Long.valueOf(taxiassignCancelled.getId())).ifPresent((taxicall) -> {
+				taxicall.setStatus("호출취소");
+				taxicallRepository.save(taxicall);
 			});
 		}
 	}
