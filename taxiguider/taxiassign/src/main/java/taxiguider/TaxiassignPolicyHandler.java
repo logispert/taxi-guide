@@ -10,7 +10,7 @@ import taxiguider.util.Assigner;
 
 @Service
 public class TaxiassignPolicyHandler{
-	@Autowired TaxiassignRepository 할당Repository;
+	@Autowired TaxiassignRepository taxiassignRepository;
     @StreamListener(KafkaProcessor.INPUT)
     public void onStringEventListener(@Payload String eventString){
 
@@ -72,7 +72,7 @@ public class TaxiassignPolicyHandler{
             System.out.println("##### listener  : " + taximanageCancelled.toJson());
 
 
-            taxiassignRepository.findById(Long.valueOf(TaximanageCancelled.getId())).ifPresent((taxicall) -> {
+            taxiassignRepository.findById(Long.valueOf(taximanageCancelled.getId())).ifPresent((taxicall) -> {
                 taxicall.setStatus("할당취소");
                 taxiassignRepository.save(taxicall);
 			});
