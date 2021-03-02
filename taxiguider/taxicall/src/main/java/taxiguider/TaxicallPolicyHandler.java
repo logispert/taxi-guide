@@ -28,7 +28,7 @@ public class TaxicallPolicyHandler {
 //           } catch (InterruptedException e) {
 //               e.printStackTrace();
 //           }
-			System.out.println("##### listener[TaxiassignCompleted]  : " + TaxiassignCompleted.toJson());
+			System.out.println("##### listener[TaxiassignCompleted]  : " + taxiassignCompleted.toJson());
 			
 
 			// Correlation id 는 'tel' 임
