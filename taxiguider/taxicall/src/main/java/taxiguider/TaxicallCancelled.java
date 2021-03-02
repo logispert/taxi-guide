@@ -23,11 +23,11 @@ public class 호출취소됨 extends AbstractEvent {
         this.할당상태 = 할당상태;
     }
 
-    public String get고객휴대폰번호() {
+    public String getTel() {
         return 고객휴대폰번호;
     }
 
-    public void set고객휴대폰번호(String 고객휴대폰번호) {
+    public void setTel(String 고객휴대폰번호) {
         this.고객휴대폰번호 = 고객휴대폰번호;
     }
 }

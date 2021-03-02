@@ -8,7 +8,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="택시할당_table")
+@Table(name="Taxiassign_table")
 public class 택시할당 {
 
     @Id
@@ -53,29 +53,29 @@ public class 택시할당 {
 	}
 
 
-	public String get택시번호() {
+	public String getTaxiid() {
 		return 택시번호;
 	}
 
-	public void set택시번호(String 택시번호) {
+	public void setTaxiid(String 택시번호) {
 		this.택시번호 = 택시번호;
 	}
 
 
-	public String get택시기사이름() {
+	public String getDriver() {
 		return 택시기사이름;
 	}
 
-	public void set택시기사이름(String 택시기사이름) {
+	public void setDriver(String 택시기사이름) {
 		this.택시기사이름 = 택시기사이름;
 	}
 
 
-	public String get택시기사전화번호() {
+	public String getDrivertel() {
 		return 택시기사전화번호;
 	}
 
-	public void set택시기사전화번호(String 택시기사전화번호) {
+	public void setDrivertel(String 택시기사전화번호) {
 		this.택시기사전화번호 = 택시기사전화번호;
 	}
 

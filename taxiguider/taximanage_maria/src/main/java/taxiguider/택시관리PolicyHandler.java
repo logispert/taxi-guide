@@ -45,16 +45,16 @@ public class 택시관리PolicyHandler {
 					택시관리Repository.save(택시관리);
 				});
 
-//        	택시관리Repository.findBy고객휴대폰번호(택시할당요청됨.get고객휴대폰번호()).ifPresent((택시관리) -> {
-//				System.out.println("택시할당요청됨 = " + 택시관리.get고객휴대폰번호());
+//        	택시관리Repository.findBy고객휴대폰번호(택시할당요청됨.getTel()).ifPresent((택시관리) -> {
+//				System.out.println("택시할당요청됨 = " + 택시관리.getTel());
 //				택시관리.set호출상태(택시할당요청됨.get호출상태());
 //				택시관리Repository.save(택시관리);
 //			});
 //            택시관리 관리 = new 택시관리();
 //            관리.set호출상태(할당확인됨.get호출상태());
-//            관리.set택시기사이름(할당확인됨.get택시기사이름());
-//            관리.set택시기사전화번호(할당확인됨.get택시기사전화번호());
-//            관리.set택시번호(할당확인됨.get택시번호());
+//            관리.setDriver(할당확인됨.getDriver());
+//            관리.setDrivertel(할당확인됨.getDrivertel());
+//            관리.setTaxiid(할당확인됨.getTaxiid());
 //            택시관리Repository.save(관리);
 		}
 	}
@@ -66,9 +66,9 @@ public class 택시관리PolicyHandler {
 //            System.out.println("##### listener  : " + 할당확인됨.toJson());
 //            택시관리 관리 = new 택시관리();
 //            관리.set호출상태(할당확인됨.get할당상태());
-//            관리.set택시기사이름(할당확인됨.get택시기사이름());
-//            관리.set택시기사전화번호(할당확인됨.get택시기사전화번호());
-//            관리.set택시번호(할당확인됨.get택시번호());
+//            관리.setDriver(할당확인됨.getDriver());
+//            관리.setDrivertel(할당확인됨.getDrivertel());
+//            관리.setTaxiid(할당확인됨.getTaxiid());
 //            택시관리Repository.save(관리);
 //        }
 //    }

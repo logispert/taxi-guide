@@ -18,9 +18,9 @@ public class Assigner {
 		할당확인됨 할당확인됨 = new 할당확인됨();
 		
 		int randDriver = (int)(Math.random() * 6);
-		할당확인됨.set택시기사이름(driverBank[randDriver][0]);
-		할당확인됨.set택시기사전화번호(driverBank[randDriver][1]);
-        할당확인됨.set택시번호(driverBank[randDriver][2]);
+		할당확인됨.setDriver(driverBank[randDriver][0]);
+		할당확인됨.setDrivertel(driverBank[randDriver][1]);
+        할당확인됨.setTaxiid(driverBank[randDriver][2]);
         return 할당확인됨;
 	}
 

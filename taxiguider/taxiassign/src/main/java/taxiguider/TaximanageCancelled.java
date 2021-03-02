@@ -17,11 +17,11 @@ public class 택시할당취소됨 extends AbstractEvent {
         this.id = id;
     }
 
-    public String get고객휴대폰번호() {
+    public String getTel() {
         return 고객휴대폰번호;
     }
 
-    public void set고객휴대폰번호(String 고객휴대폰번호) {
+    public void setTel(String 고객휴대폰번호) {
         this.고객휴대폰번호 = 고객휴대폰번호;
     }
 
@@ -41,11 +41,11 @@ public class 택시할당취소됨 extends AbstractEvent {
         this.호출상태 = 호출상태;
     }
 
-    public Integer get예상요금() {
+    public Integer getCost() {
         return 예상요금;
     }
 
-    public void set예상요금(Integer 예상요금) {
+    public void setCost(Integer 예상요금) {
         this.예상요금 = 예상요금;
     }
 }

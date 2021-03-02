@@ -308,9 +308,9 @@ public class 택시관리ServiceFallback implements 택시관리Service {
  @PostPersist
     public void onPostPersist(){    	
     	System.out.println("휴대폰번호 " + get휴대폰번호());
-        System.out.println("호출위치 " + get호출위치());
+        System.out.println("호출위치 " + getLocation());
         System.out.println("호출상태 " + get호출상태());
-        System.out.println("예상요금 " + get예상요금());
+        System.out.println("예상요금 " + getCost());
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.   	
     	if(get휴대폰번호() != null)
@@ -319,13 +319,13 @@ public class 택시관리ServiceFallback implements 택시관리Service {
 			택시관리 택시관리 = new 택시관리();
 	        
 			택시관리.setOrderId(String.valueOf(getId()));
-	        택시관리.set고객휴대폰번호(get휴대폰번호());
-	        if(get호출위치()!=null) 
-	        	택시관리.set호출위치(get호출위치());
+	        택시관리.setTel(get휴대폰번호());
+	        if(getLocation()!=null) 
+	        	택시관리.setLocation(getLocation());
 	        if(get호출상태()!=null) 
 	        	택시관리.set호출상태(get호출상태());
-	        if(get예상요금()!=null) 
-	        	택시관리.set예상요금(get예상요금());
+	        if(getCost()!=null) 
+	        	택시관리.setCost(getCost());
 	        
 	        // mappings goes here
 	        TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);

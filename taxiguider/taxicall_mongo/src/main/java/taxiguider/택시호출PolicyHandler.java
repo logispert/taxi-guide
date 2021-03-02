@@ -20,7 +20,7 @@ public class 택시호출PolicyHandler {
 	@StreamListener(KafkaProcessor.INPUT)
 	public void whenever할당확인됨_(@Payload 할당확인됨 할당확인됨) {
 		System.out.println("##### EVT TYPE[할당확인됨]  : " + 할당확인됨.getEventType());
-		if (할당확인됨.isMe() && 할당확인됨.get고객휴대폰번호() != null) {
+		if (할당확인됨.isMe() && 할당확인됨.getTel() != null) {
 
 //           try {
 //               // 원래 데이터가 트랜잭션 커밋되기도 전에 이벤트가 너무 빨리 도달하는 경우를 막기 위함
@@ -36,8 +36,8 @@ public class 택시호출PolicyHandler {
 				택시호출.set호출상태("호출확정");
 				택시호출Repository.save(택시호출);
 			});
-			택시호출Repository.findBy휴대폰번호(할당확인됨.get고객휴대폰번호()).ifPresent((택시호출) -> {
-				System.out.println("할당확인됨 = " + 할당확인됨.get고객휴대폰번호());
+			택시호출Repository.findBy휴대폰번호(할당확인됨.getTel()).ifPresent((택시호출) -> {
+				System.out.println("할당확인됨 = " + 할당확인됨.getTel());
 				택시호출.set호출상태("호출확정");
 				택시호출Repository.save(택시호출);
 			});

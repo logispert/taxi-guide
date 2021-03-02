@@ -14,7 +14,7 @@ import taxiguider.external.택시관리;
 import taxiguider.external.택시관리Service;
 
 @Entity
-@Table(name="택시호출_table")
+@Table(name="Taxicall_table")
 public class 택시호출 {
 
     @Id
@@ -33,9 +33,9 @@ public class 택시호출 {
 //        택시호출요청됨.publishAfterCommit();
     	
     	System.out.println("휴대폰번호 " + get휴대폰번호());
-        System.out.println("호출위치 " + get호출위치());
+        System.out.println("호출위치 " + getLocation());
         System.out.println("호출상태 " + get호출상태());
-        System.out.println("예상요금 " + get예상요금());
+        System.out.println("예상요금 " + getCost());
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.   	
     	if(get휴대폰번호() != null)
@@ -44,13 +44,13 @@ public class 택시호출 {
 			택시관리 택시관리 = new 택시관리();
 			택시관리.setId(getId());
 			택시관리.setOrderId(String.valueOf(getId()));
-	        택시관리.set고객휴대폰번호(get휴대폰번호());
-	        if(get호출위치()!=null) 
-	        	택시관리.set호출위치(get호출위치());
+	        택시관리.setTel(get휴대폰번호());
+	        if(getLocation()!=null)
+	        	택시관리.setLocation(getLocation());
 	        if(get호출상태()!=null) 
 	        	택시관리.set호출상태(get호출상태());
-	        if(get예상요금()!=null) 
-	        	택시관리.set예상요금(get예상요금());
+	        if(getCost()!=null)
+	        	택시관리.setCost(getCost());
 	        
 	        // mappings goes here
 	        TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
@@ -72,7 +72,7 @@ public class 택시호출 {
 		//택시관리.setId(getId());
 		//택시관리.setOrderId(String.valueOf(getId()));
 		//택시관리.set호출상태("호출취소");
-		//택시관리.set고객휴대폰번호(get휴대폰번호());
+		//택시관리.setTel(get휴대폰번호());
 		
 		// mappings goes here
 		//TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
@@ -98,12 +98,12 @@ public class 택시호출 {
 	}
 
 
-	public String get호출위치() {
+	public String getLocation() {
 		return 호출위치;
 	}
 
 
-	public void set호출위치(String 호출위치) {
+	public void setLocation(String 호출위치) {
 		this.호출위치 = 호출위치;
 	}
 
@@ -118,12 +118,12 @@ public class 택시호출 {
 	}
 
 
-	public Integer get예상요금() {
+	public Integer getCost() {
 		return 예상요금;
 	}
 
 
-	public void set예상요금(Integer 예상요금) {
+	public void setCost(Integer 예상요금) {
 		this.예상요금 = 예상요금;
 	}
 

@@ -79,8 +79,8 @@ public class 택시관리 {
         	택시할당요청됨.setId(Long.valueOf(orderId));
         	
         	택시할당요청됨.set고객위치(호출위치);
-        	택시할당요청됨.set고객휴대폰번호(고객휴대폰번호);
-        	택시할당요청됨.set예상요금(예상요금);
+        	택시할당요청됨.setTel(고객휴대폰번호);
+        	택시할당요청됨.setCost(예상요금);
         	택시할당요청됨.set호출상태(호출상태);
             BeanUtils.copyProperties(this, 택시할당요청됨);
             택시할당요청됨.publishAfterCommit();
@@ -150,8 +150,8 @@ public class 택시관리 {
 //        	택시할당요청됨.setId(Long.valueOf(orderId));
 //        	
 //        	택시할당요청됨.set고객위치(호출위치);
-//        	택시할당요청됨.set고객휴대폰번호(고객휴대폰번호);
-//        	택시할당요청됨.set예상요금(예상요금);
+//        	택시할당요청됨.setTel(고객휴대폰번호);
+//        	택시할당요청됨.setCost(예상요금);
 //        	택시할당요청됨.set호출상태(호출상태);
 //            BeanUtils.copyProperties(this, 택시할당요청됨);
 //            택시할당요청됨.publishAfterCommit();
@@ -176,7 +176,7 @@ public class 택시관리 {
     }
 
 
-	public String get고객휴대폰번호() {
+	public String getTel() {
 		return 고객휴대폰번호;
 	}
 
@@ -186,12 +186,12 @@ public class 택시관리 {
 	}
 
 
-	public String get호출위치() {
+	public String getLocation() {
 		return 호출위치;
 	}
 
 
-	public void set호출위치(String 호출위치) {
+	public void setLocation(String 호출위치) {
 		this.호출위치 = 호출위치;
 	}
 	
@@ -202,42 +202,42 @@ public class 택시관리 {
 		this.호출상태 = 호출상태;
 	}
 
-	public Integer get예상요금() {
+	public Integer getCost() {
 		return 예상요금;
 	}
 
 
-	public void set예상요금(Integer 예상요금) {
+	public void setCost(Integer 예상요금) {
 		this.예상요금 = 예상요금;
 	}
 
 
-	public String get택시번호() {
+	public String getTaxiid() {
 		return 택시번호;
 	}
 
 
-	public void set택시번호(String 택시번호) {
+	public void setTaxiid(String 택시번호) {
 		this.택시번호 = 택시번호;
 	}
 
 
-	public String get택시기사이름() {
+	public String getDriver() {
 		return 택시기사이름;
 	}
 
 
-	public void set택시기사이름(String 택시기사이름) {
+	public void setDriver(String 택시기사이름) {
 		this.택시기사이름 = 택시기사이름;
 	}
 
 
-	public String get택시기사전화번호() {
+	public String getDrivertel() {
 		return 택시기사전화번호;
 	}
 
 
-	public void set택시기사전화번호(String 택시기사전화번호) {
+	public void setDrivertel(String 택시기사전화번호) {
 		this.택시기사전화번호 = 택시기사전화번호;
 	}
 

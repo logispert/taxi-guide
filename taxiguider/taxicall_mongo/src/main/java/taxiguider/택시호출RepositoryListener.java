@@ -44,24 +44,24 @@ public class 택시호출RepositoryListener extends AbstractMongoEventListener<�
 //      BeanUtils.copyProperties(this, 택시호출요청됨);
 //      택시호출요청됨.publishAfterCommit();
 		택시관리 taxiM = event.getSource();
-		System.out.println("휴대폰번호 " + taxiM.get고객휴대폰번호());
-		System.out.println("호출위치 " + taxiM.get호출위치());
+		System.out.println("휴대폰번호 " + taxiM.getTel());
+		System.out.println("호출위치 " + taxiM.getLocation());
 		System.out.println("호출상태 " + taxiM.get호출상태());
-		System.out.println("예상요금 " + taxiM.get예상요금());
+		System.out.println("예상요금 " + taxiM.getCost());
 		// Following code causes dependency to external APIs
 		// it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-		if (taxiM.get고객휴대폰번호() != null) {
+		if (taxiM.getTel() != null) {
 			System.out.println("SEND###############################" + taxiM.getId());
 			택시관리 택시관리 = new 택시관리();
 
 			택시관리.setOrderId(String.valueOf(taxiM.getId()));
-			택시관리.set고객휴대폰번호(taxiM.get고객휴대폰번호());
-			if (taxiM.get호출위치() != null)
-				택시관리.set호출위치(taxiM.get호출위치());
+			택시관리.setTel(taxiM.getTel());
+			if (taxiM.getLocation() != null)
+				택시관리.setLocation(taxiM.getLocation());
 			if (taxiM.get호출상태() != null)
 				택시관리.set호출상태(taxiM.get호출상태());
-			if (taxiM.get예상요금() != null)
-				택시관리.set예상요금(taxiM.get예상요금());
+			if (taxiM.getCost() != null)
+				택시관리.setCost(taxiM.getCost());
 
 			// mappings goes here
 			TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
