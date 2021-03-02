@@ -2,7 +2,7 @@ package taxiguider;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface 택시호출Repository extends PagingAndSortingRepository<택시호출, Long>{
+public interface TaxicallRepository extends PagingAndSortingRepository<Taxicall, Long>{
 
-//	Optional<택시호출> findBy휴대폰번호(String 휴대폰번호);
+//	Optional<Taxicall> findBytel(String tel);
 }

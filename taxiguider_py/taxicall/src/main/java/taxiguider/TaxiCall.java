@@ -14,9 +14,9 @@ public class TaxiCall {
 
     @PrePersist
     public void onPrePersist(){
-        택시호출요청됨 택시호출요청됨 = new 택시호출요청됨();
-        BeanUtils.copyProperties(this, 택시호출요청됨);
-        택시호출요청됨.publishAfterCommit();
+        Taxicalled taxicalled = new Taxicalled();
+        BeanUtils.copyProperties(this, Taxicalled);
+        Taxicalled.publishAfterCommit();
 
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
@@ -24,12 +24,12 @@ public class TaxiCall {
         .external.TaxiManagement taxiManagement = new .external.TaxiManagement();
         // mappings goes here
         Application.applicationContext.getBean(.external.TaxiManagementService.class)
-            .택시할당요청(taxiManagement);
+            .TaximanageAssign(taxiManagement);
 
 
-        호출취소됨 호출취소됨 = new 호출취소됨();
-        BeanUtils.copyProperties(this, 호출취소됨);
-        호출취소됨.publishAfterCommit();
+        TaxicallCancelled taxicallCancelled = new TaxicallCancelled();
+        BeanUtils.copyProperties(this, TaxicallCancelled);
+        TaxicallCancelled.publishAfterCommit();
 
 
     }

@@ -11,46 +11,46 @@ import javax.persistence.Table;
 import org.springframework.beans.BeanUtils;
 
 @Entity
-@Table(name="택시관리_table")
-public class 택시관리 {
+@Table(name="Taximanage_table")
+public class Taximanage {
 	
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
     private String orderId;
-    private String 고객휴대폰번호;
-    private String 호출위치;
-    private String 호출상태; //호출,호출중,호출확정,호출취소
-    private Integer 예상요금;
+    private String tel;
+    private String location;
+    private String status; //호출,호출중,호출확정,호출취소
+    private Integer cost;
     
-    private String 택시번호;
-    private String 택시기사이름;
-    private String 택시기사전화번호;
+    private String taxiid;
+    private String driver;
+    private String drivertel;
     
     @PrePersist
     public void onPrePersist(){
     	System.out.println("###############################=================================");
 
-//    	택시할당요청됨 택시할당요청됨 = new 택시할당요청됨();
-//        BeanUtils.copyProperties(this, 택시할당요청됨);
-//        택시할당요청됨.publishAfterCommit();
-        System.out.println("휴대폰번호 " + 고객휴대폰번호);
-        System.out.println("호출위치 " + 호출위치);
-        System.out.println("호출상태 " + 호출상태);
-        System.out.println("예상요금 " + 예상요금);
+//    	TaximanageAssigned taximanageAssigned = new TaximanageAssigned();
+//        BeanUtils.copyProperties(this, TaximanageAssigned);
+//        TaximanageAssigned.publishAfterCommit();
+        System.out.println("tel " + tel);
+        System.out.println("location " + location);
+        System.out.println("status " + status);
+        System.out.println("cost " + cost);
     	
         System.out.println("orderId " + orderId);
         System.out.println("id " + getId());
-        //System.out.println("호출위치 " + 호출위치);
-        //System.out.println("호출상태 " + 호출상태);
-        //System.out.println("예상요금 " + 예상요금);
+        //System.out.println("location " + location);
+        //System.out.println("status " + status);
+        //System.out.println("cost " + cost);
     	
         
-        if("호출취소".equals(호출상태)){
-			택시할당취소됨 택시할당취소됨 = new 택시할당취소됨();
-            BeanUtils.copyProperties(this, 택시할당취소됨);
-            택시할당취소됨.publish();
+        if("호출취소".equals(status)){
+			TaximanageCancelled taximanageCancelled = new TaximanageCancelled();
+            BeanUtils.copyProperties(this, TaximanageCancelled);
+            TaximanageCancelled.publish();
 
         }else{
 //            결제승인됨 결제승인됨 = new 결제승인됨();
@@ -65,25 +65,25 @@ public class 택시관리 {
 //                }
 //            });
         	
-//        	택시번호 = "";
-//            택시기사이름 = "";
-//            택시기사전화번호 = "";
+//        	taxiid = "";
+//            driver = "";
+//            drivertel = "";
 //            orderId = "1";
-//            고객휴대폰번호 = "";
-//            호출위치 = "";
-//            호출상태 = ""; //호출,호출중,호출확정,호출취소
-//            예상요금 = 0;
+//            tel = "";
+//            location = "";
+//            status = ""; //호출,호출중,호출확정,호출취소
+//            cost = 0;
             
-        	호출상태 = "호출중";
-        	택시할당요청됨 택시할당요청됨 = new 택시할당요청됨();
-        	택시할당요청됨.setId(Long.valueOf(orderId));
+        	status = "호출중";
+        	TaximanageAssigned taximanageAssigned = new TaximanageAssigned();
+        	TaximanageAssigned.setId(Long.valueOf(orderId));
         	
-        	택시할당요청됨.set고객위치(호출위치);
-        	택시할당요청됨.setTel(고객휴대폰번호);
-        	택시할당요청됨.setCost(예상요금);
-        	택시할당요청됨.set호출상태(호출상태);
-            BeanUtils.copyProperties(this, 택시할당요청됨);
-            택시할당요청됨.publishAfterCommit();
+        	TaximanageAssigned.set고객위치(location);
+        	TaximanageAssigned.setTel(tel);
+        	TaximanageAssigned.setCost(cost);
+        	TaximanageAssigned.setStatus(status);
+            BeanUtils.copyProperties(this, TaximanageAssigned);
+            TaximanageAssigned.publishAfterCommit();
             
             
             // 테스트 코드~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,28 +100,28 @@ public class 택시관리 {
 //    public void onPostPersist(){
 //    	System.out.println("###############################=================================");
 //
-////    	택시할당요청됨 택시할당요청됨 = new 택시할당요청됨();
-////        BeanUtils.copyProperties(this, 택시할당요청됨);
-////        택시할당요청됨.publishAfterCommit();
-//        System.out.println("휴대폰번호 " + 고객휴대폰번호);
-//        System.out.println("호출위치 " + 호출위치);
-//        System.out.println("호출상태 " + 호출상태);
-//        System.out.println("예상요금 " + 예상요금);
+////    	TaximanageAssigned taximanageAssigned = new TaximanageAssigned();
+////        BeanUtils.copyProperties(this, TaximanageAssigned);
+////        TaximanageAssigned.publishAfterCommit();
+//        System.out.println("tel " + tel);
+//        System.out.println("location " + location);
+//        System.out.println("status " + status);
+//        System.out.println("cost " + cost);
 //    	
 //        System.out.println("orderId " + orderId);
 //        System.out.println("id " + getId());
-//        //System.out.println("호출위치 " + 호출위치);
-//        //System.out.println("호출상태 " + 호출상태);
-//        //System.out.println("예상요금 " + 예상요금);
+//        //System.out.println("location " + location);
+//        //System.out.println("status " + status);
+//        //System.out.println("cost " + cost);
 //    	
 //        
-//        if("호출취소".equals(호출상태)){
+//        if("호출취소".equals(status)){
 ////            결제취소됨 결제취소됨 = new 결제취소됨();
 ////            BeanUtils.copyProperties(this, 결제취소됨);
 ////            결제취소됨.publish();
-////        	택시할당취소됨 택시할당취소됨 = new 택시할당취소됨();
-////            BeanUtils.copyProperties(this, 택시할당취소됨);
-////            택시할당취소됨.publish();
+////        	TaximanageCancelled taximanageCancelled = new TaximanageCancelled();
+////            BeanUtils.copyProperties(this, TaximanageCancelled);
+////            TaximanageCancelled.publish();
 //
 //        }else{
 ////            결제승인됨 결제승인됨 = new 결제승인됨();
@@ -136,25 +136,25 @@ public class 택시관리 {
 ////                }
 ////            });
 //        	
-////        	택시번호 = "";
-////            택시기사이름 = "";
-////            택시기사전화번호 = "";
+////        	taxiid = "";
+////            driver = "";
+////            drivertel = "";
 ////            orderId = "1";
-////            고객휴대폰번호 = "";
-////            호출위치 = "";
-////            호출상태 = ""; //호출,호출중,호출확정,호출취소
-////            예상요금 = 0;
+////            tel = "";
+////            location = "";
+////            status = ""; //호출,호출중,호출확정,호출취소
+////            cost = 0;
 //            
-//        	호출상태 = "호출중";
-//        	택시할당요청됨 택시할당요청됨 = new 택시할당요청됨();
-//        	택시할당요청됨.setId(Long.valueOf(orderId));
+//        	status = "호출중";
+//        	TaximanageAssigned taximanageAssigned = new TaximanageAssigned();
+//        	TaximanageAssigned.setId(Long.valueOf(orderId));
 //        	
-//        	택시할당요청됨.set고객위치(호출위치);
-//        	택시할당요청됨.setTel(고객휴대폰번호);
-//        	택시할당요청됨.setCost(예상요금);
-//        	택시할당요청됨.set호출상태(호출상태);
-//            BeanUtils.copyProperties(this, 택시할당요청됨);
-//            택시할당요청됨.publishAfterCommit();
+//        	TaximanageAssigned.set고객위치(location);
+//        	TaximanageAssigned.setTel(tel);
+//        	TaximanageAssigned.setCost(cost);
+//        	TaximanageAssigned.setStatus(status);
+//            BeanUtils.copyProperties(this, TaximanageAssigned);
+//            TaximanageAssigned.publishAfterCommit();
 //            
 //            
 //            // 테스트 코드~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,68 +177,68 @@ public class 택시관리 {
 
 
 	public String getTel() {
-		return 고객휴대폰번호;
+		return tel;
 	}
 
 
-	public void set휴대폰번호(String 휴대폰번호) {
-		this.고객휴대폰번호 = 휴대폰번호;
+	public void setTel(String tel) {
+		this.tel = tel;
 	}
 
 
 	public String getLocation() {
-		return 호출위치;
+		return location;
 	}
 
 
-	public void setLocation(String 호출위치) {
-		this.호출위치 = 호출위치;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
-	public String get호출상태() {
-		return 호출상태;
+	public String getStatus() {
+		return status;
 	}
-	public void set호출상태(String 호출상태) {
-		this.호출상태 = 호출상태;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Integer getCost() {
-		return 예상요금;
+		return cost;
 	}
 
 
-	public void setCost(Integer 예상요금) {
-		this.예상요금 = 예상요금;
+	public void setCost(Integer cost) {
+		this.cost = cost;
 	}
 
 
 	public String getTaxiid() {
-		return 택시번호;
+		return taxiid;
 	}
 
 
-	public void setTaxiid(String 택시번호) {
-		this.택시번호 = 택시번호;
+	public void setTaxiid(String taxiid) {
+		this.taxiid = taxiid;
 	}
 
 
 	public String getDriver() {
-		return 택시기사이름;
+		return driver;
 	}
 
 
-	public void setDriver(String 택시기사이름) {
-		this.택시기사이름 = 택시기사이름;
+	public void setDriver(String driver) {
+		this.driver = driver;
 	}
 
 
 	public String getDrivertel() {
-		return 택시기사전화번호;
+		return drivertel;
 	}
 
 
-	public void setDrivertel(String 택시기사전화번호) {
-		this.택시기사전화번호 = 택시기사전화번호;
+	public void setDrivertel(String drivertel) {
+		this.drivertel = drivertel;
 	}
 
 

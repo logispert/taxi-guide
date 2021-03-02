@@ -14,17 +14,17 @@ public class PolicyHandler{
     }
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever할당확인됨_(@Payload 할당확인됨 할당확인됨){
+    public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted TaxiassignCompleted){
 
-        if(할당확인됨.isMe()){
-            System.out.println("##### listener  : " + 할당확인됨.toJson());
+        if(TaxiassignCompleted.isMe()){
+            System.out.println("##### listener  : " + TaxiassignCompleted.toJson());
         }
     }
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever할당취소됨_(@Payload 할당취소됨 할당취소됨){
+    public void wheneverTaxiassignCancelled_(@Payload TaxiassignCancelled TaxiassignCancelled){
 
-        if(할당취소됨.isMe()){
-            System.out.println("##### listener  : " + 할당취소됨.toJson());
+        if(TaxiassignCancelled.isMe()){
+            System.out.println("##### listener  : " + TaxiassignCancelled.toJson());
         }
     }
 

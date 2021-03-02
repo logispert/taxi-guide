@@ -1,7 +1,7 @@
 
 package taxiguider;
 
-public class 택시할당취소됨 extends AbstractEvent {
+public class TaximanageCancelled extends AbstractEvent {
 
     private Long id;
 

@@ -13,7 +13,7 @@
 
 # 목차
 
-- [택스가이드-택시호출서비스](#---)
+- [택스가이드-Taxicall서비스](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [체크포인트](#체크포인트)
   - [분석/설계](#분석설계)
@@ -41,22 +41,22 @@
 1. 고객 위치에서 가입된 가까운 택시에게 고객위치와 고객 목적지를 전달한다.
 1. 택시는 호출요청을 확인하고 할당 확인을 한다.
 1. 할당확인 즉시, 택시 요금이 결재된다.
-1. 고객은 택시호출을 취소 할 수 있다.
+1. 고객은 Taxicall을 취소 할 수 있다.
 1. 호출이 취소 되면 택시기사는 할당취소 확인을 한다.
 1. 고객은 택시기사 위치를 중간중간 조회 한다.(고객)
 
 
 기능적 요구사항
-1. 고객은 자신의 휴대폰번호, 호출위치, 예상요금으로 택시를 호출한다.(요청/응답 모델)
-1. 택시호출 서비스는 고객의 정보와 함께 택시관리 시스템으로 할당요청을 보낸다.(Pub/Sub) 
-1. 택시관리는 고객의 요청에 우선적으로 호출 중으로 응답을 보낸다.(요청/응답 모델)
-1. 택시관리는 호출중으로 응답을 보내는 동시에 택시 할당시스템에 택시 할당을 요청한다.(Pub/Sub)
-1. 택시 할당 시스템은 등록 된 택시 기사를 할당하고 할당되었음을 택시관리와 택시호출 서비스에 알린다.(Pub/Sub)
-1. 택시관리와 택시호출 서비스는 택시기사 정보를 저장한다.
+1. 고객은 자신의 tel, location, cost으로 택시를 호출한다.(요청/응답 모델)
+1. Taxicall 서비스는 고객의 정보와 함께 Taximanage 시스템으로 할당요청을 보낸다.(Pub/Sub)
+1. Taximanage는 고객의 요청에 우선적으로 호출 중으로 응답을 보낸다.(요청/응답 모델)
+1. Taximanage는 호출중으로 응답을 보내는 동시에 택시 할당시스템에 택시 할당을 요청한다.(Pub/Sub)
+1. 택시 할당 시스템은 등록 된 택시 기사를 할당하고 할당되었음을 Taximanage와 Taxicall 서비스에 알린다.(Pub/Sub)
+1. Taximanage와 Taxicall 서비스는 택시기사 정보를 저장한다.
 
 고객은 수시로 택시 할당 상태를 확인 할 수 있다.
 
-택시 할당을 위해서는 택시관리는 택시기사이름/전화번호/차량번호가 입력 되어야 한다.
+택시 할당을 위해서는 Taximanage는 driver/전화번호/차량번호가 입력 되어야 한다.
 
 
 
@@ -322,21 +322,21 @@ public interface 결제이력Repository extends PagingAndSortingRepository<결�
 - 적용 후 REST API 의 테스트
 ```
 # taxicall 서비스 호출처리
-http localhost:8081/택시호출s 휴대폰번호="01012345678" 호출상태="호출"
-http localhost:8081/택시호출s 휴대폰번호="01012345678" 호출상태=호출 호출위치="마포" 예상요금=25000
+http localhost:8081/Taxicalls tel="01012345678" status="호출"
+http localhost:8081/Taxicalls tel="01012345678" status=호출 location="마포" cost=25000
 
 
-http http://localhost:8081/택시호출s/1
+http http://localhost:8081/Taxicalls/1
 
-http localhost:8081/택시호출s/
+http localhost:8081/Taxicalls/
 
-http delete http://localhost:8081/택시호출s/1
+http delete http://localhost:8081/Taxicalls/1
 
-http localhost:8081/택시호출s/
+http localhost:8081/Taxicalls/
 
 
 # taximanage 서비스 처리
-http://localhost:8082/택시관리s/1
+http://localhost:8082/Taximanages/1
 
 # taxiassign 확인
 http localhost:8081/orders/1
@@ -919,14 +919,14 @@ Request/Response 방식으로 구현하지 않았기 때문에 서비스가 더�
 
 - 각 마이크로 서비스의 REST API 의 테스트
 ```
-# 택시호출 서비스의 주문처리
-http localhost:8081/택시호출s 휴대폰번호="01012345678" 호출상태=호출 호출위치="마포" 예상요금=25500
+# Taxicall 서비스의 주문처리
+http localhost:8081/Taxicalls tel="01012345678" status=호출 location="마포" cost=25500
 
-# 택시관리 서비스의 배달처리
-http localhost:8082/택시관리s
+# Taximanage 서비스의 배달처리
+http localhost:8082/Taximanages
 
-# 택시할당 확인
-http localhost:8084/택시할당s
+# Taxiassign 확인
+http localhost:8084/Taxiassigns
 
 ```
 

@@ -1,6 +1,6 @@
 package taxiguider.util;
 
-import taxiguider.할당확인됨;
+import taxiguider.TaxiassignCompleted;
 
 public class Assigner {
 	
@@ -14,14 +14,14 @@ public class Assigner {
 		{"유승오", "010-7345-1789", "84사4567"}
 	};
 	
-	public static 할당확인됨 get택시할당됨() {
-		할당확인됨 할당확인됨 = new 할당확인됨();
+	public static TaxiassignCompleted getTaxiassign됨() {
+		TaxiassignCompleted taxiassignCompleted = new TaxiassignCompleted();
 		
 		int randDriver = (int)(Math.random() * 6);
-		할당확인됨.setDriver(driverBank[randDriver][0]);
-		할당확인됨.setDrivertel(driverBank[randDriver][1]);
-        할당확인됨.setTaxiid(driverBank[randDriver][2]);
-        return 할당확인됨;
+		TaxiassignCompleted.setDriver(driverBank[randDriver][0]);
+		TaxiassignCompleted.setDrivertel(driverBank[randDriver][1]);
+        TaxiassignCompleted.setTaxiid(driverBank[randDriver][2]);
+        return TaxiassignCompleted;
 	}
 
 }

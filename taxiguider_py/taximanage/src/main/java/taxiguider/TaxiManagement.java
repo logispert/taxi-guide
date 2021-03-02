@@ -14,14 +14,14 @@ public class TaxiManagement {
 
     @PrePersist
     public void onPrePersist(){
-        택시할당요청됨 택시할당요청됨 = new 택시할당요청됨();
-        BeanUtils.copyProperties(this, 택시할당요청됨);
-        택시할당요청됨.publishAfterCommit();
+        TaximanageAssigned taximanageAssigned = new TaximanageAssigned();
+        BeanUtils.copyProperties(this, TaximanageAssigned);
+        TaximanageAssigned.publishAfterCommit();
 
 
-        택시할당취소됨 택시할당취소됨 = new 택시할당취소됨();
-        BeanUtils.copyProperties(this, 택시할당취소됨);
-        택시할당취소됨.publishAfterCommit();
+        TaximanageCancelled taximanageCancelled = new TaximanageCancelled();
+        BeanUtils.copyProperties(this, TaximanageCancelled);
+        TaximanageCancelled.publishAfterCommit();
 
 
     }

@@ -9,29 +9,29 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="Taxiassign_table")
-public class 택시할당 {
+public class Taxiassign {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private String 호출상태; //호출,호출중,호출확정,호출취소
-    private String 택시번호;
-    private String 택시기사이름;
-    private String 택시기사전화번호;
+    private String status; //호출,호출중,호출확정,호출취소
+    private String taxiid;
+    private String driver;
+    private String drivertel;
     
     @PrePersist
     public void onPrePersist(){
-    	System.out.println("==============택시할당================");
+    	System.out.println("==============Taxiassign================");
 
 
-        //할당확인됨 할당확인됨 = new 할당확인됨();
-        //BeanUtils.copyProperties(this, 할당확인됨);
-        //할당확인됨.publishAfterCommit();
+        //TaxiassignCompleted taxiassignCompleted = new TaxiassignCompleted();
+        //BeanUtils.copyProperties(this, TaxiassignCompleted);
+        //TaxiassignCompleted.publishAfterCommit();
 
 
-        //할당취소됨 할당취소됨 = new 할당취소됨();
-        //BeanUtils.copyProperties(this, 할당취소됨);
-        //할당취소됨.publishAfterCommit();
+        //TaxiassignCancelled taxiassignCancelled = new TaxiassignCancelled();
+        //BeanUtils.copyProperties(this, TaxiassignCancelled);
+        //TaxiassignCancelled.publishAfterCommit();
     }
 
 
@@ -44,39 +44,39 @@ public class 택시할당 {
     }
 
 
-	public String get호출상태() {
-		return 호출상태;
+	public String getStatus() {
+		return status;
 	}
 
-	public void set호출상태(String 호출상태) {
-		this.호출상태 = 호출상태;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 
 	public String getTaxiid() {
-		return 택시번호;
+		return taxiid;
 	}
 
-	public void setTaxiid(String 택시번호) {
-		this.택시번호 = 택시번호;
+	public void setTaxiid(String taxiid) {
+		this.taxiid = taxiid;
 	}
 
 
 	public String getDriver() {
-		return 택시기사이름;
+		return driver;
 	}
 
-	public void setDriver(String 택시기사이름) {
-		this.택시기사이름 = 택시기사이름;
+	public void setDriver(String driver) {
+		this.driver = driver;
 	}
 
 
 	public String getDrivertel() {
-		return 택시기사전화번호;
+		return drivertel;
 	}
 
-	public void setDrivertel(String 택시기사전화번호) {
-		this.택시기사전화번호 = 택시기사전화번호;
+	public void setDrivertel(String drivertel) {
+		this.drivertel = drivertel;
 	}
 
 

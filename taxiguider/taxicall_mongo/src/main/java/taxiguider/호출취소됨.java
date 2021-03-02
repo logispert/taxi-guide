@@ -1,7 +1,7 @@
 
 package taxiguider;
 
-public class 호출취소됨 extends AbstractEvent {
+public class TaxicallCancelled extends AbstractEvent {
 
     private Long id;
 

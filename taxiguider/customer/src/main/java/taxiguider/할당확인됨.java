@@ -1,7 +1,7 @@
 
 package taxiguider;
 
-public class 할당확인됨 extends AbstractEvent {
+public class TaxiassignCompleted extends AbstractEvent {
 
     private Long id;
 

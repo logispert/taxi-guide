@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name="taximanage", url="http://localhost:8082")
-public interface 택시관리Service {
+public interface TaximanageService {
 
-    @RequestMapping(method= RequestMethod.POST, path="/택시관리s")
-    public void 택시할당요청(@RequestBody 택시관리 택시관리);
+    @RequestMapping(method= RequestMethod.POST, path="/Taximanages")
+    public void TaximanageAssign(@RequestBody Taximanage Taximanage);
 
 }

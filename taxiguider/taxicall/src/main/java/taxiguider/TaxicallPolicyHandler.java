@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import taxiguider.config.kafka.KafkaProcessor;
 
 @Service
-public class 택시호출PolicyHandler {
+public class TaxicallPolicyHandler {
 	@Autowired
-	택시호출Repository 택시호출Repository;
+	TaxicallRepository taxicallRepository;
 
 	@StreamListener(KafkaProcessor.INPUT)
 	public void onStringEventListener(@Payload String eventString) {
@@ -18,9 +18,9 @@ public class 택시호출PolicyHandler {
 	}
 
 	@StreamListener(KafkaProcessor.INPUT)
-	public void whenever할당확인됨_(@Payload 할당확인됨 할당확인됨) {
-		System.out.println("##### EVT TYPE[할당확인됨]  : " + 할당확인됨.getEventType());
-		if (할당확인됨.isMe() && 할당확인됨.getTel() != null) {
+	public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted TaxiassignCompleted) {
+		System.out.println("##### EVT TYPE[TaxiassignCompleted]  : " + TaxiassignCompleted.getEventType());
+		if (TaxiassignCompleted.isMe() && TaxiassignCompleted.getTel() != null) {
 
 //           try {
 //               // 원래 데이터가 트랜잭션 커밋되기도 전에 이벤트가 너무 빨리 도달하는 경우를 막기 위함
@@ -28,39 +28,39 @@ public class 택시호출PolicyHandler {
 //           } catch (InterruptedException e) {
 //               e.printStackTrace();
 //           }
-			System.out.println("##### listener[할당확인됨]  : " + 할당확인됨.toJson());
+			System.out.println("##### listener[TaxiassignCompleted]  : " + TaxiassignCompleted.toJson());
 			
 
-			// Correlation id 는 '고객휴대폰번호' 임
-			if(할당확인됨.getId() != null)
-				택시호출Repository.findById(Long.valueOf(할당확인됨.getId())).ifPresent((택시호출) -> {
-					택시호출.set호출상태("호출확정");
-					택시호출Repository.save(택시호출);
+			// Correlation id 는 'tel' 임
+			if(TaxiassignCompleted.getId() != null)
+				TaxicallRepository.findById(Long.valueOf(TaxiassignCompleted.getId())).ifPresent((Taxicall) -> {
+					Taxicall.setStatus("호출확정");
+					TaxicallRepository.save(Taxicall);
 				});
-//			택시호출Repository.findBy휴대폰번호(할당확인됨.getTel()).ifPresent((택시호출) -> {
-//				System.out.println("할당확인됨 = " + 할당확인됨.getTel());
-//				택시호출.set호출상태("호출확정");
-//				택시호출Repository.save(택시호출);
+//			TaxicallRepository.findBytel(TaxiassignCompleted.getTel()).ifPresent((Taxicall) -> {
+//				System.out.println("taxiassignCompleted = " + TaxiassignCompleted.getTel());
+//				Taxicall.setStatus("호출확정");
+//				TaxicallRepository.save(Taxicall);
 //			});
 		}
 
-//		if (할당확인됨.isMe()) {
-//			택시호출 호출 = new 택시호출();
-//			호출.set호출상태(할당확인됨.get할당상태());
-//			택시호출Repository.save(호출);
+//		if (TaxiassignCompleted.isMe()) {
+//			Taxicall 호출 = new Taxicall();
+//			호출.setStatus(TaxiassignCompleted.getStatus());
+//			TaxicallRepository.save(호출);
 //
-//			System.out.println("##### listener[할당확인됨]  : " + 할당확인됨.toJson());
+//			System.out.println("##### listener[TaxiassignCompleted]  : " + TaxiassignCompleted.toJson());
 //		}
 	}
 
 	@StreamListener(KafkaProcessor.INPUT)
-	public void whenever할당취소됨_(@Payload 할당취소됨 할당취소됨) {
-		System.out.println("##### EVT TYPE[할당취소됨]  : " + 할당취소됨.getEventType());
-		if (할당취소됨.isMe()) {
-			System.out.println("##### listener[할당취소됨]  : " + 할당취소됨.toJson());
-			택시호출Repository.findById(Long.valueOf(할당취소됨.getId())).ifPresent((택시호출) -> {
-				택시호출.set호출상태("호출취소");
-				택시호출Repository.save(택시호출);
+	public void wheneverTaxiassignCancelled_(@Payload TaxiassignCancelled TaxiassignCancelled) {
+		System.out.println("##### EVT TYPE[TaxiassignCancelled]  : " + TaxiassignCancelled.getEventType());
+		if (TaxiassignCancelled.isMe()) {
+			System.out.println("##### listener[TaxiassignCancelled]  : " + TaxiassignCancelled.toJson());
+			TaxicallRepository.findById(Long.valueOf(TaxiassignCancelled.getId())).ifPresent((Taxicall) -> {
+				Taxicall.setStatus("호출취소");
+				TaxicallRepository.save(Taxicall);
 			});
 		}
 	}

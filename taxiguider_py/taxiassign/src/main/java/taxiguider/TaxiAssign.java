@@ -14,14 +14,14 @@ public class TaxiAssign {
 
     @PrePersist
     public void onPrePersist(){
-        할당확인됨 할당확인됨 = new 할당확인됨();
-        BeanUtils.copyProperties(this, 할당확인됨);
-        할당확인됨.publishAfterCommit();
+        TaxiassignCompleted taxiassignCompleted = new TaxiassignCompleted();
+        BeanUtils.copyProperties(this, TaxiassignCompleted);
+        TaxiassignCompleted.publishAfterCommit();
 
 
-        할당취소됨 할당취소됨 = new 할당취소됨();
-        BeanUtils.copyProperties(this, 할당취소됨);
-        할당취소됨.publishAfterCommit();
+        TaxiassignCancelled taxiassignCancelled = new TaxiassignCancelled();
+        BeanUtils.copyProperties(this, TaxiassignCancelled);
+        TaxiassignCancelled.publishAfterCommit();
 
 
     }

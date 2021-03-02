@@ -9,9 +9,9 @@
 2. 고객 위치에서 가용 택시를 조회 후 택시를 할당 요청한다.
 3. 할당요청된 택시중 하나를 자동할당 한다.
 4. 할당 즉시, 고객에게 호출완료 정보를 전달 한다.
-5. 고객은 택시호출을 취소 할 수 있다.
+5. 고객은 Taxicall을 취소 할 수 있다.
 6. 호출이 취소 되면 해당 할당을 취소한다.
-7. 고객은 호출상태를 중간중간 조회하고 카톡으로 받는다.
+7. 고객은 status를 중간중간 조회하고 카톡으로 받는다.
 
 비기능적 요구사항
 1. 트랜잭션
@@ -20,7 +20,7 @@
 - 택시 할당요청은 할당확인 기능이 동작하지 않더라도, 365일 24시간 받을 수 있어야 한다 Async (event-driven), Eventual Consistency
 - 고객 호출요청이 과중되면 택시 할당확인 요청을 잠시동안 받지 않고 잠시후에 하도록 유도한다 Circuit breaker, fallback
 3. 성능
-- 고객은 호출상태를 조회하고 할당/할당취소 여부를 카톡으로 확인 할 수 있어야 한다. CQRS, Event driven
+- 고객은 status를 조회하고 할당/할당취소 여부를 카톡으로 확인 할 수 있어야 한다. CQRS, Event driven
 
 
 
@@ -72,7 +72,7 @@
 ### 어그리게잇으로 묶기
 ![어그리게잇](https://user-images.githubusercontent.com/78134019/109456954-399d5b00-7a9d-11eb-8815-f5d2c0dc06f5.jpg)
 
-    - 호출, 택시관리, 택시 할당 어그리게잇을 생성하고 그와 연결된 command 와 event 들에 의하여 트랜잭션이 유지되어야 하는 단위로 그들 끼리 묶어줌 
+    - 호출, Taximanage, 택시 할당 어그리게잇을 생성하고 그와 연결된 command 와 event 들에 의하여 트랜잭션이 유지되어야 하는 단위로 그들 끼리 묶어줌 
 
 
 ### 바운디드 컨텍스트로 묶기
@@ -111,7 +111,7 @@
 - 고객이 택시를 호출요청한다.(ok)
 - 택시 관리 시스템이 택시 할당을 요청한다.(ok)
 - 택시 자동 할당이 완료된다.(ok)
-- 호출상태 및 할당상태를 갱신한다.(ok)
+- status 및 status를 갱신한다.(ok)
 - 고객에게 카톡 알림을 한다.(ok)
 
 
@@ -137,9 +137,9 @@
 1) 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리 
    택시 할당요청이 완료되지 않은 호출요청 완료처리는 최종 할당이 되지 않는 경우 무한정 대기 등 대고객 서비스 및 신뢰도에 치명적 문제점이 있어 ACID 트랜잭션 적용. 
    호출요청 시 택시 할당요청에 대해서는 Request-Response 방식 처리 
-2) 호출요청 완료시 할당확인 및 결과 전송: Taxi manage service 에서taxi Assign 마이크로서비스로 택시할당 요청이 전달되는 과정에 있어서 
+2) 호출요청 완료시 할당확인 및 결과 전송: Taxi manage service 에서taxi Assign 마이크로서비스로 Taxiassign 요청이 전달되는 과정에 있어서 
   taxi Assig 마이크로 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함. 
-3) 나머지 모든 inter-microservice 트랜잭션: 호출상태, 할당/할당취소 여부 등 이벤트에 대해 카톡을 처리하는 등 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, 
+3) 나머지 모든 inter-microservice 트랜잭션: status, 할당/할당취소 여부 등 이벤트에 대해 카톡을 처리하는 등 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, 
 Eventual Consistency 를 기본으로 채택함. 
 
 
@@ -201,7 +201,7 @@ SET PATH=%MARIA_HOME%\BIN;%MONGO_HOME%\BIN;%KAFKA_HOME%\BIN\WINDOWS;%JAVA_HOME%\
 ```
 
 ## DDD 의 적용
-총 3개의 Domain 으로 관리되고 있으며, 택시요청(Taxicall) , 택시관리(TaxiManage), 택시할당(TaxiAssign) 으로 구성된다. 
+총 3개의 Domain 으로 관리되고 있으며, 택시요청(Taxicall) , Taximanage(TaxiManage), Taxiassign(TaxiAssign) 으로 구성된다. 
 
 
 ![DDD](https://user-images.githubusercontent.com/78134019/109460756-74ef5800-7aa4-11eb-8140-ec3ebb47a63f.jpg)
@@ -235,7 +235,7 @@ gateway > applitcation.yml 설정
 gateway 테스트
 
 ```
-http localhost:8080/택시호출s
+http localhost:8080/Taxicalls
 -> gateway 를 호출하나 8081 로 호출됨
 ```
 ![gateway_3](https://user-images.githubusercontent.com/78134019/109480424-da504280-7abe-11eb-988e-2a6d7a1f7cea.png)
@@ -244,12 +244,12 @@ http localhost:8080/택시호출s
 
 ## 동기식 호출 과 Fallback 처리
 
-호출(taxicall)->택시관리(taximanage) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리함.
+호출(taxicall)->Taximanage(taximanage) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리함.
 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
 
 ```
-# external > 택시관리Service.java
+# external > TaximanageService.java
 
 
 package taxiguider.external;
@@ -260,18 +260,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 //@FeignClient(name="taximanage", url="http://localhost:8082")
-@FeignClient(name="taximanage", url="http://localhost:8082", fallback = 택시관리ServiceFallback.class)
-public interface 택시관리Service {
+@FeignClient(name="taximanage", url="http://localhost:8082", fallback = TaximanageServiceFallback.class)
+public interface TaximanageService {
 
-    @RequestMapping(method= RequestMethod.POST, path="/택시관리s")
-    public void 택시할당요청(@RequestBody 택시관리 택시관리);
+    @RequestMapping(method= RequestMethod.POST, path="/Taximanages")
+    public void TaximanageAssign(@RequestBody Taximanage Taximanage);
 
 }
 
 ```
 
 ```
-# external > 택시관리ServiceFallback.java
+# external > TaximanageServiceFallback.java
 
 
 package taxiguider.external;
@@ -279,19 +279,19 @@ package taxiguider.external;
 import org.springframework.stereotype.Component;
 
 @Component
-public class 택시관리ServiceFallback implements 택시관리Service {
+public class TaximanageServiceFallback implements TaximanageService {
 	 
 	//@Override
-	//public void 택시할당요청(택시관리 택시관리) 
+	//public void TaximanageAssign(Taximanage Taximanage) 
 	//{	
 	//	System.out.println("Circuit breaker has been opened. Fallback returned instead.");
 	//}
 	
 	
 	@Override
-	public void 택시할당요청(택시관리 택시관리) {
+	public void TaximanageAssign(Taximanage Taximanage) {
 		// TODO Auto-generated method stub
-		System.out.println("Circuit breaker has been opened. Fallback returned instead. " + 택시관리.getId());
+		System.out.println("Circuit breaker has been opened. Fallback returned instead. " + taximanage.getId());
 	}
 
 }
@@ -301,34 +301,34 @@ public class 택시관리ServiceFallback implements 택시관리Service {
 ![동기식](https://user-images.githubusercontent.com/78134019/109463569-97837000-7aa8-11eb-83c4-6f6eff1594aa.jpg)
 
 
-- 택시호출을 하면 택시관리가 호출되도록..
+- Taxicall을 하면 Taximanage가 호출되도록..
 ```
-# 택시호출.java
+# Taxicall.java
 
  @PostPersist
     public void onPostPersist(){    	
-    	System.out.println("휴대폰번호 " + get휴대폰번호());
-        System.out.println("호출위치 " + getLocation());
-        System.out.println("호출상태 " + get호출상태());
-        System.out.println("예상요금 " + getCost());
+    	System.out.println("tel " + getTel());
+        System.out.println("location " + getLocation());
+        System.out.println("status " + getStatus());
+        System.out.println("cost " + getCost());
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.   	
-    	if(get휴대폰번호() != null)
+    	if(getTel() != null)
 		{
     		System.out.println("SEND###############################" + getId());
-			택시관리 택시관리 = new 택시관리();
+			Taximanage taximanage = new Taximanage();
 	        
-			택시관리.setOrderId(String.valueOf(getId()));
-	        택시관리.setTel(get휴대폰번호());
+			taximanage.setOrderId(String.valueOf(getId()));
+	        taximanage.setTel(getTel());
 	        if(getLocation()!=null) 
-	        	택시관리.setLocation(getLocation());
-	        if(get호출상태()!=null) 
-	        	택시관리.set호출상태(get호출상태());
+	        	taximanage.setLocation(getLocation());
+	        if(getStatus()!=null) 
+	        	taximanage.setStatus(getStatus());
 	        if(getCost()!=null) 
-	        	택시관리.setCost(getCost());
+	        	taximanage.setCost(getCost());
 	        
 	        // mappings goes here
-	        TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
+	        TaxicallApplication.applicationContext.getBean(TaximanageService.class).TaximanageAssign(Taximanage);
 		}
 ```
 
@@ -340,19 +340,19 @@ public class 택시관리ServiceFallback implements 택시관리Service {
 
 #taxicall
 
-C:\Users\Administrator>http localhost:8081/택시호출s 휴대폰번호="01012345678" 호출상태="호출"
+C:\Users\Administrator>http localhost:8081/Taxicalls tel="01012345678" status="호출"
 ```
 
-![택시관리죽으면택시콜놉](https://user-images.githubusercontent.com/78134019/109464780-905d6180-7aaa-11eb-9c90-e7d1326deea1.jpg)
+![Taximanage죽으면택시콜놉](https://user-images.githubusercontent.com/78134019/109464780-905d6180-7aaa-11eb-9c90-e7d1326deea1.jpg)
 
 ```
 # 택시 관리 (taximanage) 재기동 후 주문하기
 
 #주문하기(order)
-http localhost:8081/택시호출s 휴대폰번호="01012345678" 호출상태="호출"
+http localhost:8081/Taxicalls tel="01012345678" status="호출"
 ```
 
-![택시관리재시작](https://user-images.githubusercontent.com/78134019/109464984-e5997300-7aaa-11eb-9363-b7bfe15de105.jpg)
+![Taximanage재시작](https://user-images.githubusercontent.com/78134019/109464984-e5997300-7aaa-11eb-9363-b7bfe15de105.jpg)
 
 -fallback 
 
@@ -369,7 +369,7 @@ http localhost:8081/택시호출s 휴대폰번호="01012345678" 호출상태="�
 ![비동기_호출2](https://user-images.githubusercontent.com/78134019/109468467-f4365900-7aaf-11eb-877a-049637b5ee6a.png)
 
 <택시 할당이 정상적이지 않아 호출중으로 남아있음>
-![택시호출_택시할당없이_조회](https://user-images.githubusercontent.com/78134019/109471791-99ebc700-7ab4-11eb-924f-03715de42eba.png)
+![Taxicall_Taxiassign없이_조회](https://user-images.githubusercontent.com/78134019/109471791-99ebc700-7ab4-11eb-924f-03715de42eba.png)
 
 
 

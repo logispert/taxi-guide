@@ -16,10 +16,10 @@ public class PolicyHandler{
     }
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever호출취소됨_(@Payload 호출취소됨 호출취소됨){
+    public void wheneverTaxicallCancelled_(@Payload TaxicallCancelled TaxicallCancelled){
 
-        if(호출취소됨.isMe()){
-            System.out.println("##### listener  : " + 호출취소됨.toJson());
+        if(TaxicallCancelled.isMe()){
+            System.out.println("##### listener  : " + TaxicallCancelled.toJson());
         }
     }
 

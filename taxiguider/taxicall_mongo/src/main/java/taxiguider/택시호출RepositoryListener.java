@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 
-import taxiguider.external.택시관리;
-import taxiguider.external.택시관리Service;
+import taxiguider.external.Taximanage;
+import taxiguider.external.TaximanageService;
 
 /**
  * Equivalent of a domain method annotated by <code>PrePersist</code>.
@@ -19,13 +19,13 @@ import taxiguider.external.택시관리Service;
  * 
  * @author Tobias Trelle
  */
-public class 택시호출RepositoryListener extends AbstractMongoEventListener<택시관리> {
+public class TaxicallRepositoryListener extends AbstractMongoEventListener<Taximanage> {
 
 	@Override
-	public void onBeforeSave(BeforeSaveEvent<택시관리> event) {
+	public void onBeforeSave(BeforeSaveEvent<Taximanage> event) {
 		super.onBeforeSave(event);
 
-		택시관리 taxiM = event.getSource();
+		Taximanage taxiM = event.getSource();
 		Document d = event.getDocument();
 		System.out.println("===============>>>>>>=======================" + taxiM.getId());
 		if (taxiM.getId() == null) {
@@ -38,58 +38,58 @@ public class 택시호출RepositoryListener extends AbstractMongoEventListener<�
 	}
 
 	@Override
-	public void onAfterSave(AfterSaveEvent<택시관리> event) {
+	public void onAfterSave(AfterSaveEvent<Taximanage> event) {
 		super.onAfterSave(event);
-//      택시호출요청됨 택시호출요청됨 = new 택시호출요청됨();
-//      BeanUtils.copyProperties(this, 택시호출요청됨);
-//      택시호출요청됨.publishAfterCommit();
-		택시관리 taxiM = event.getSource();
-		System.out.println("휴대폰번호 " + taxiM.getTel());
-		System.out.println("호출위치 " + taxiM.getLocation());
-		System.out.println("호출상태 " + taxiM.get호출상태());
-		System.out.println("예상요금 " + taxiM.getCost());
+//      Taxicalled taxicalled = new Taxicalled();
+//      BeanUtils.copyProperties(this, Taxicalled);
+//      Taxicalled.publishAfterCommit();
+		Taximanage taxiM = event.getSource();
+		System.out.println("tel " + taxiM.getTel());
+		System.out.println("location " + taxiM.getLocation());
+		System.out.println("status " + taxiM.getStatus());
+		System.out.println("cost " + taxiM.getCost());
 		// Following code causes dependency to external APIs
 		// it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 		if (taxiM.getTel() != null) {
 			System.out.println("SEND###############################" + taxiM.getId());
-			택시관리 택시관리 = new 택시관리();
+			Taximanage taximanage = new Taximanage();
 
-			택시관리.setOrderId(String.valueOf(taxiM.getId()));
-			택시관리.setTel(taxiM.getTel());
+			taximanage.setOrderId(String.valueOf(taxiM.getId()));
+			taximanage.setTel(taxiM.getTel());
 			if (taxiM.getLocation() != null)
-				택시관리.setLocation(taxiM.getLocation());
-			if (taxiM.get호출상태() != null)
-				택시관리.set호출상태(taxiM.get호출상태());
+				taximanage.setLocation(taxiM.getLocation());
+			if (taxiM.getStatus() != null)
+				taximanage.setStatus(taxiM.getStatus());
 			if (taxiM.getCost() != null)
-				택시관리.setCost(taxiM.getCost());
+				taximanage.setCost(taxiM.getCost());
 
 			// mappings goes here
-			TaxicallApplication.applicationContext.getBean(택시관리Service.class).택시할당요청(택시관리);
+			TaxicallApplication.applicationContext.getBean(TaximanageService.class).TaximanageAssign(Taximanage);
 		}
 
-//      호출취소됨 호출취소됨 = new 호출취소됨();
-//      BeanUtils.copyProperties(this, 호출취소됨);
-//      호출취소됨.publishAfterCommit();
+//      TaxicallCancelled taxicallCancelled = new TaxicallCancelled();
+//      BeanUtils.copyProperties(this, TaxicallCancelled);
+//      TaxicallCancelled.publishAfterCommit();
 	}
 
 	@Override
-	public void onBeforeConvert(BeforeConvertEvent<택시관리> event) {
+	public void onBeforeConvert(BeforeConvertEvent<Taximanage> event) {
 		// super.onBeforeConvert(event);
 
 	}
 
 	@Override
-	public void onAfterLoad(AfterLoadEvent<택시관리> event) {
+	public void onAfterLoad(AfterLoadEvent<Taximanage> event) {
 
 	}
 
 	@Override
-	public void onAfterDelete(AfterDeleteEvent<택시관리> event) {
+	public void onAfterDelete(AfterDeleteEvent<Taximanage> event) {
 
 	}
 
 	@Override
-	public void onAfterConvert(AfterConvertEvent<택시관리> event) {
+	public void onAfterConvert(AfterConvertEvent<Taximanage> event) {
 
 	}
 

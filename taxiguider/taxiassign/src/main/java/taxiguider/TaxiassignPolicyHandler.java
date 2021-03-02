@@ -9,75 +9,75 @@ import taxiguider.config.kafka.KafkaProcessor;
 import taxiguider.util.Assigner;
 
 @Service
-public class 택시할당PolicyHandler{
-	@Autowired 택시할당Repository 할당Repository;
+public class TaxiassignPolicyHandler{
+	@Autowired TaxiassignRepository 할당Repository;
     @StreamListener(KafkaProcessor.INPUT)
     public void onStringEventListener(@Payload String eventString){
 
     }
     
-    //private String 호출상태; //호출,호출중,호출확정,호출취소
+    //private String status; //호출,호출중,호출확정,호출취소
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever택시할당요청됨_(@Payload 택시할당요청됨 택시할당요청됨){
-    	System.out.println("##### EVT TYPE[택시할당요청됨]  : " + 택시할당요청됨.getEventType());
-        if(택시할당요청됨.isMe()){
-            System.out.println("##### listener  : " + 택시할당요청됨.toJson());
+    public void wheneverTaximanageAssigned_(@Payload TaximanageAssigned TaximanageAssigned){
+    	System.out.println("##### EVT TYPE[TaximanageAssigned]  : " + TaximanageAssigned.getEventType());
+        if(TaximanageAssigned.isMe()){
+            System.out.println("##### listener  : " + TaximanageAssigned.toJson());
             
-            if(택시할당요청됨.get호출상태() != null  && 택시할당요청됨.get호출상태().equals("호출중"))
+            if(TaximanageAssigned.getStatus() != null  && TaximanageAssigned.getStatus().equals("호출중"))
             {
             	
-            	택시할당요청됨.set호출상태("호출확정");
-            	//할당확인됨 할당확인됨 = Assigner.get택시할당됨();
-            	//BeanUtils.copyProperties(택시할당요청됨, 할당확인됨);
-            	//할당확인됨.setEventType("할당확인됨");
-            	택시할당요청됨.publish();
+            	TaximanageAssigned.setStatus("호출확정");
+            	//TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassign됨();
+            	//BeanUtils.copyProperties(TaximanageAssigned, TaxiassignCompleted);
+            	//TaxiassignCompleted.setEventType("TaxiassignCompleted");
+            	TaximanageAssigned.publish();
             	
-            	할당확인됨 할당확인됨 = Assigner.get택시할당됨();
-            	할당확인됨.setId(택시할당요청됨.getId());
-            	할당확인됨.set할당상태("할당확정");
-                할당확인됨.setTel(택시할당요청됨.getTel());
-                할당확인됨.setLocation(택시할당요청됨.get고객위치());
-            	할당확인됨.setEventType("할당확인됨");
-            	//택시할당요청됨.publishAfterCommit();
-            	할당확인됨.publish(); 
+            	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassign됨();
+            	TaxiassignCompleted.setId(TaximanageAssigned.getId());
+            	TaxiassignCompleted.setStatus("할당확정");
+                TaxiassignCompleted.setTel(TaximanageAssigned.getTel());
+                TaxiassignCompleted.setLocation(TaximanageAssigned.get고객위치());
+            	TaxiassignCompleted.setEventType("TaxiassignCompleted");
+            	//TaximanageAssigned.publishAfterCommit();
+            	TaxiassignCompleted.publish();
             }  
         }
     }
     
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever할당확인됨_(@Payload 할당확인됨 할당확인됨){
-    	System.out.println("##### EVT TYPE[할당확인됨]  : " + 할당확인됨.getEventType());
-        if(할당확인됨.isMe()){
-            System.out.println("##### listener  : " + 할당확인됨.toJson());
+    public void wheneverTaxiassignCompleted_(@Payload TaxiassignCompleted TaxiassignCompleted){
+    	System.out.println("##### EVT TYPE[TaxiassignCompleted]  : " + TaxiassignCompleted.getEventType());
+        if(TaxiassignCompleted.isMe()){
+            System.out.println("##### listener  : " + TaxiassignCompleted.toJson());
             
-            if(할당확인됨.get할당상태() != null  && 할당확인됨.get할당상태().equals("할당확정"))
+            if(TaxiassignCompleted.getStatus() != null  && TaxiassignCompleted.getStatus().equals("할당확정"))
             {
             	
-//            	할당확인됨 할당확인됨 = Assigner.get택시할당됨();
-//            	BeanUtils.copyProperties(택시할당요청됨, 할당확인됨);
+//            	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassign됨();
+//            	BeanUtils.copyProperties(TaximanageAssigned, TaxiassignCompleted);
 //            	
-//                //할당확인됨.setEventType("할당확인됨");
-//            	할당확인됨.setEventType("할당확인됨");
-//            	//택시할당요청됨.publishAfterCommit();
-//            	할당확인됨.publish(); 
+//                //TaxiassignCompleted.setEventType("TaxiassignCompleted");
+//            	TaxiassignCompleted.setEventType("TaxiassignCompleted");
+//            	//TaximanageAssigned.publishAfterCommit();
+//            	TaxiassignCompleted.publish();
             }  
         }
     }
     
     
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever택시할당취소됨_(@Payload 택시할당취소됨 택시할당취소됨){
+    public void wheneverTaximanageCancelled_(@Payload TaximanageCancelled TaximanageCancelled){
     	
-        if(택시할당취소됨.isMe()){
-            System.out.println("##### listener  : " + 택시할당취소됨.toJson());
+        if(TaximanageCancelled.isMe()){
+            System.out.println("##### listener  : " + TaximanageCancelled.toJson());
             
             
-            할당Repository.findById(Long.valueOf(택시할당취소됨.getId())).ifPresent((택시호출) -> {
-				택시호출.set호출상태("할당취소");
-				할당Repository.save(택시호출);
+            할당Repository.findById(Long.valueOf(TaximanageCancelled.getId())).ifPresent((Taxicall) -> {
+				Taxicall.setStatus("할당취소");
+				할당Repository.save(Taxicall);
 			});
             
-            택시할당취소됨.publish();
+            TaximanageCancelled.publish();
         }
     }
 
