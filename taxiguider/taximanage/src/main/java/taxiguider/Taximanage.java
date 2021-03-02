@@ -49,8 +49,8 @@ public class Taximanage {
         
         if("호출취소".equals(status)){
 			TaximanageCancelled taximanageCancelled = new TaximanageCancelled();
-            BeanUtils.copyProperties(this, TaximanageCancelled);
-            TaximanageCancelled.publish();
+            BeanUtils.copyProperties(this, taximanageCancelled);
+			taximanageCancelled.publish();
 
         }else{
 //            결제승인됨 결제승인됨 = new 결제승인됨();
@@ -76,13 +76,13 @@ public class Taximanage {
             
         	status = "호출중";
         	TaximanageAssigned taximanageAssigned = new TaximanageAssigned();
-        	TaximanageAssigned.setId(Long.valueOf(orderId));
-        	
-        	TaximanageAssigned.set고객위치(location);
-        	TaximanageAssigned.setTel(tel);
-        	TaximanageAssigned.setCost(cost);
-        	TaximanageAssigned.setStatus(status);
-            BeanUtils.copyProperties(this, TaximanageAssigned);
+			taximanageAssigned.setId(Long.valueOf(orderId));
+
+			taximanageAssigned.set고객위치(location);
+			taximanageAssigned.setTel(tel);
+			taximanageAssigned.setCost(cost);
+			taximanageAssigned.setStatus(status);
+            BeanUtils.copyProperties(this, taximanageAssigned);
             TaximanageAssigned.publishAfterCommit();
             
             
