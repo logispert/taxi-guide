@@ -61,8 +61,8 @@ public class Taxicall {
 	@PreRemove
 	public void onPreRemove(){
 		TaxicallCancelled taxicallCancelled = new TaxicallCancelled();
-		BeanUtils.copyProperties(this, TaxicallCancelled);
-		TaxicallCancelled.publishAfterCommit();
+		BeanUtils.copyProperties(this, taxicallCancelled);
+		taxicallCancelled.publishAfterCommit();
 
 		//Following code causes dependency to external APIs
 		// it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
