@@ -33,13 +33,13 @@ public class TaxiassignPolicyHandler{
                 taximanageAssigned.publish();
             	
             	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassignCompleted();
-            	TaxiassignCompleted.setId(taximanageAssigned.getId());
-            	TaxiassignCompleted.setStatus("할당확정");
-                TaxiassignCompleted.setTel(taximanageAssigned.getTel());
-                TaxiassignCompleted.setLocation(taximanageAssigned.get고객위치());
-            	TaxiassignCompleted.setEventType("TaxiassignCompleted");
+                taxiassignCompleted.setId(taximanageAssigned.getId());
+                taxiassignCompleted.setStatus("할당확정");
+                taxiassignCompleted.setTel(taximanageAssigned.getTel());
+                taxiassignCompleted.setLocation(taximanageAssigned.get고객위치());
+                taxiassignCompleted.setEventType("TaxiassignCompleted");
             	//TaximanageAssigned.publishAfterCommit();
-            	TaxiassignCompleted.publish();
+                taxiassignCompleted.publish();
             }  
         }
     }
