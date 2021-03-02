@@ -35,7 +35,7 @@ public class TaxiassignPolicyHandler{
             	TaxiassignCompleted taxiassignCompleted = Assigner.getTaxiassignCompleted();
                 taxiassignCompleted.setId(taximanageAssigned.getId());
                 taxiassignCompleted.setStatus("할당확정");
-                taxiassignCompleted.setTel(taximanageAssigned.getTel());
+                taxiassignCompleted.setDrivertel(taximanageAssigned.getTel());
                 taxiassignCompleted.setLocation(taximanageAssigned.get고객위치());
                 taxiassignCompleted.setEventType("TaxiassignCompleted");
             	//TaximanageAssigned.publishAfterCommit();
