@@ -154,29 +154,23 @@ Eventual Consistency 를 기본으로 채택함.
 # 구현:
 
 서비스를 로컬에서 실행하는 방법은 아래와 같다 
-각 서비스별로 bat 파일로 실행한다. 
+각 서비스별로 bat 을 파일로 실행한다. 
 
 ```
 - run_taxicall.bat
 call setenv.bat
-REM java  -Xmx400M -Djava.security.egd=file:/dev/./urandom -jar food-delivery\app\target\app-0.0.1-SNAPSHOT.jar --spring.profiles.active=docker
-REM java  -Xmx400M -Djava.security.egd=file:/dev/./urandom -jar food-delivery\app\target\app-0.0.1-SNAPSHOT.jar --spring.profiles.active=default
 cd ..\taxiguider\taxicall
 mvn clean spring-boot:run
 pause ..
 
 - run_taximanage.bat
 call setenv.bat
-REM java  -Xmx400M -Djava.security.egd=file:/dev/./urandom -jar food-delivery\pay\target\pay-0.0.1-SNAPSHOT.jar --spring.profiles.active=docker
-REM java  -Xmx400M -Djava.security.egd=file:/dev/./urandom -jar food-delivery\pay\target\pay-0.0.1-SNAPSHOT.jar --spring.profiles.active=default
 cd ..\taxiguider\taximanage
 mvn clean spring-boot:run
 pause ..
 
 - run_taxiassign.bat
 call setenv.bat
-REM java  -Xmx400M -Djava.security.egd=file:/dev/./urandom -jar food-delivery\store\target\store-0.0.1-SNAPSHOT.jar --spring.profiles.active=docker
-REM java  -Xmx400M -Djava.security.egd=file:/dev/./urandom -jar food-delivery\store\target\store-0.0.1-SNAPSHOT.jar --spring.profiles.active=default
 cd ..\taxiguider\taxiassign
 mvn clean spring-boot:run
 pause ..
@@ -189,6 +183,21 @@ cd ..\taxiguider_py\customer\
 python policy-handler.py 
 pause ..
 
+```
+
+setenv.bat
+```
+SET JAVA_HOME=C:\DEV\SDK\JDK\jdk1.8.0_131
+SET MVN_HOME=C:\DEV\Tools\apache-maven-3.6.3
+SET NODE_HOME=C:\DEV\Tools\nodejs
+SET KAFKA_HOME=C:\DEV\Tools\kafka_2.13-2.7.0
+SET ANACONDA_HOME=C:\DEV\SDK\Anaconda3
+SET MONGO_HOME=C:\DEV\Tools\mongodb
+SET MARIA_HOME=C:\DEV\Tools\mariadb-10.3.13-winx64
+SET MARIA_DATA=C:\DEV\DATA\mariadb
+
+
+SET PATH=%MARIA_HOME%\BIN;%MONGO_HOME%\BIN;%KAFKA_HOME%\BIN\WINDOWS;%JAVA_HOME%\BIN;%MVN_HOME%\BIN;%PATH%;
 ```
 
 ## DDD 의 적용
@@ -209,7 +218,7 @@ pause ..
 ![폴리그랏](https://user-images.githubusercontent.com/78134019/109483794-02da3b80-7ac3-11eb-8714-40f1f41164bb.jpg)
 
 
-## 폴리글랏 프로그래밍
+## 폴리글랏 프로그래밍 - 파이썬
 
 ![폴리그랏프로그래밍](https://user-images.githubusercontent.com/78134019/109489189-dbd33800-7ac9-11eb-86f5-bbdb072454ce.jpg)
 
@@ -250,7 +259,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name="taximanage", url="http://localhost:8082")
+//@FeignClient(name="taximanage", url="http://localhost:8082")
+@FeignClient(name="taximanage", url="http://localhost:8082", fallback = 택시관리ServiceFallback.class)
 public interface 택시관리Service {
 
     @RequestMapping(method= RequestMethod.POST, path="/택시관리s")
@@ -259,6 +269,35 @@ public interface 택시관리Service {
 }
 
 ```
+
+```
+# external > 택시관리ServiceFallback.java
+
+
+package taxiguider.external;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class 택시관리ServiceFallback implements 택시관리Service {
+	 
+	//@Override
+	//public void 택시할당요청(택시관리 택시관리) 
+	//{	
+	//	System.out.println("Circuit breaker has been opened. Fallback returned instead.");
+	//}
+	
+	
+	@Override
+	public void 택시할당요청(택시관리 택시관리) {
+		// TODO Auto-generated method stub
+		System.out.println("Circuit breaker has been opened. Fallback returned instead. " + 택시관리.getId());
+	}
+
+}
+
+```
+
 ![동기식](https://user-images.githubusercontent.com/78134019/109463569-97837000-7aa8-11eb-83c4-6f6eff1594aa.jpg)
 
 
@@ -267,11 +306,7 @@ public interface 택시관리Service {
 # 택시호출.java
 
  @PostPersist
-    public void onPostPersist(){
-//        택시호출요청됨 택시호출요청됨 = new 택시호출요청됨();
-//        BeanUtils.copyProperties(this, 택시호출요청됨);
-//        택시호출요청됨.publishAfterCommit();
-    	
+    public void onPostPersist(){    	
     	System.out.println("휴대폰번호 " + get휴대폰번호());
         System.out.println("호출위치 " + get호출위치());
         System.out.println("호출상태 " + get호출상태());
