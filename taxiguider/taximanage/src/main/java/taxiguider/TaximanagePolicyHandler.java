@@ -40,7 +40,7 @@ public class TaximanagePolicyHandler {
 
 			if (taximanageAssigned.getId() != null)
 				// Correlation id 는 'tel' 임
-				taximanageRepository.findById(Long.valueOf(taximanageAssigned.getId())).ifPresent((Taximanage) -> {
+				taximanageRepository.findById(Long.valueOf(taximanageAssigned.getId())).ifPresent((taximanage) -> {
 					taximanage.setStatus(taximanageAssigned.getStatus());
 					taximanageRepository.save(taximanage);
 				});
