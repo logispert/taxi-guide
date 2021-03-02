@@ -20,14 +20,14 @@ public class TaximanagePolicyHandler {
 	@StreamListener(KafkaProcessor.INPUT)
 	public void wheneverTaxicallCancelled_(@Payload TaxicallCancelled taxicallCancelled) {
 		System.out.println("##### EVT TYPE[TaxicallCancelled]  : " + taxicallCancelled.getEventType());
-		if (TaxicallCancelled.isMe()) {
+		if (taxicallCancelled.isMe()) {
 			System.out.println("##### listener  : " + taxicallCancelled.toJson());
 
-			if (TaxicallCancelled.getId() != null)
+			if (taxicallCancelled.getId() != null)
 				// Correlation id 는 'tel' 임
-				taximanageRepository.findById(Long.valueOf(taxicallCancelled.getId())).ifPresent((Taximanage) -> {
+				taximanageRepository.findById(Long.valueOf(taxicallCancelled.getId())).ifPresent((taximanage) -> {
 					taximanage.setStatus("호출요청취소됨");
-					taximanageRepository.save(Taximanage);
+					taximanageRepository.save(taximanage);
 				});
 		}
 	}
